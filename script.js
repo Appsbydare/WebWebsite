@@ -517,6 +517,7 @@ if (nav) {
 // ============================================
 
 const menuIconBtn = document.getElementById('menu-icon-btn');
+const navMenuIconBtn = document.getElementById('nav-menu-icon-btn');
 const slideMenu = document.getElementById('slide-menu');
 const closeMenuBtn = document.getElementById('close-menu-btn');
 
@@ -525,13 +526,21 @@ const menuOverlay = document.createElement('div');
 menuOverlay.className = 'menu-overlay';
 document.body.appendChild(menuOverlay);
 
-// Open menu
+// Open menu function
+function openMenu() {
+    slideMenu.classList.add('active');
+    menuOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// Open menu from hero section
 if (menuIconBtn) {
-    menuIconBtn.addEventListener('click', () => {
-        slideMenu.classList.add('active');
-        menuOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    });
+    menuIconBtn.addEventListener('click', openMenu);
+}
+
+// Open menu from navigation bar
+if (navMenuIconBtn) {
+    navMenuIconBtn.addEventListener('click', openMenu);
 }
 
 // Close menu
