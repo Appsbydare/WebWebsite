@@ -34,11 +34,17 @@ h1, h2, h3, h4, h5, h6 {
     paint-order: stroke fill;
 }
 
-/* White fill with black stroke (for CTA heading) */
-.text-filled-outline-black {
-    color: #ffffff;
-    -webkit-text-stroke: 1.5px #111213;
-    paint-order: stroke fill;
+/* Prevent text from breaking on CTA heading */
+#stats + section h2:last-of-type .split-target,
+section:has(.glass-btn) h2:last-of-type .split-target {
+    white-space: nowrap;
+    display: inline-block;
+}
+
+@media (max-width: 768px) {
+    section:has(.glass-btn) h2:last-of-type .split-target {
+        white-space: normal;
+    }
 }
 
 /* Outlined text on dark backgrounds */
