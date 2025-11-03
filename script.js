@@ -176,6 +176,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Make typewriter container visible immediately (no fade-in delay)
     gsap.set('#typewriter', { opacity: 1, y: 0 });
 
+    // Create first word element immediately and add to timeline
+    const firstWord = words[0];
+    const firstWordElement = createWordElement(firstWord);
+    typewriterElement.appendChild(firstWordElement);
+    currentWordElement = firstWordElement;
+    
+    const firstWordChars = firstWordElement.querySelectorAll('.char');
+    const midPoint = Math.floor(firstWordChars.length / 2);
+    const windowWidth = window.innerWidth;
+    const startDistance = windowWidth * 0.5;
+    
+    // Set initial state for first word characters
+    firstWordChars.forEach((char, index) => {
+        const fromLeft = index < midPoint;
+        gsap.set(char, {
+            x: fromLeft ? -startDistance : startDistance,
+            opacity: 0
+        });
+    });
+
     // Animate hero headings
     const heroHeadings = document.querySelectorAll('section:first-of-type .split-target[data-animation="heading-left"], section:first-of-type .split-target[data-animation="heading-right"]');
     
@@ -198,10 +218,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }, index === 0 ? 0 : '-=0.8');
     });
 
-    // Start word animation immediately when headers start appearing
-    heroTimeline.call(() => {
-        animateWord(); // Start immediately, no delay
-    }, 0); // Start at the same time as headers
+    // Animate first word characters simultaneously with headers (at position 0)
+    firstWordChars.forEach((char, index) => {
+        const fromLeft = index < midPoint;
+        heroTimeline.to(char, {
+            x: 0,
+            opacity: 1,
+            duration: 2.4,
+            delay: index * 0.16,
+            ease: 'power3.out'
+        }, 0); // Start at the same time as headers
+    });
+
+    // Schedule next word after first completes
+    wordIndex = 1;
+    setTimeout(() => {
+        animateWord(); // Continue with next word
+    }, 4000); // After first word animation completes
 
     // Tagline appears after first word animation completes
     // For a word with ~10 letters: last letter delay = 9 * 0.16 = 1.44s, duration = 2.4s, total ≈ 4s
