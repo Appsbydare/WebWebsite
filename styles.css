@@ -113,7 +113,7 @@ footer span:not(.fa):not(.fas):not(.far):not(.fab) {
 
 .hero-typewriter {
     font-family: 'BebasNeue', 'Unbounded', sans-serif !important;
-    letter-spacing: -0.02em;
+    letter-spacing: 0.05em; /* Increased character spacing */
     position: relative;
     min-height: 0.8em;
     display: flex;

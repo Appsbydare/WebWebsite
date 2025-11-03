@@ -170,8 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: 'power3.out'
     });
 
-    // Hero Timeline
-    const heroTimeline = gsap.timeline({ delay: 0.3 });
+    // Hero Timeline - reduced initial delay
+    const heroTimeline = gsap.timeline({ delay: 0.1 });
 
     // Animate hero headings
     const heroHeadings = document.querySelectorAll('section:first-of-type .split-target[data-animation="heading-left"], section:first-of-type .split-target[data-animation="heading-right"]');
@@ -195,19 +195,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }, index === 0 ? 0 : '-=0.8');
     });
 
-    // Start typewriter animation when headers finish (no delay)
+    // Start typewriter animation immediately when headers finish
     heroTimeline.from('#typewriter', {
         duration: 1,
         y: 35,
         opacity: 0,
         ease: 'power3.out'
-    }, '-=0.1'); // Start almost immediately after headers
+    }, '-=0.5'); // Start sooner, overlapping with headers
 
     // .hero-cta removed - animation no longer needed
 
     // Start word animation immediately after typewriter appears
     heroTimeline.call(() => {
-        setTimeout(animateWord, 100);
+        setTimeout(animateWord, 0); // Start immediately
     });
 
     // Tagline appears after first word animation completes
