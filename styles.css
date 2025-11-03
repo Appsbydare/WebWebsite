@@ -115,7 +115,7 @@ footer span:not(.fa):not(.fas):not(.far):not(.fab) {
     font-family: 'BebasNeue', 'Unbounded', sans-serif !important;
     letter-spacing: -0.02em;
     position: relative;
-    min-height: 1.3em;
+    min-height: 0.8em;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -125,6 +125,8 @@ footer span:not(.fa):not(.fas):not(.far):not(.fab) {
     box-shadow: none !important;
     background: transparent !important;
     border: none !important;
+    margin-top: 0 !important;
+    margin-bottom: 0.5rem !important;
 }
 
 @media (min-width: 640px) {
