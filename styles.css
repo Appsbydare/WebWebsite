@@ -69,8 +69,17 @@ section[class*="bg-[#1"] .text-outlined {
     -webkit-text-stroke: 1.5px #ffffff;
 }
 
+/* Load Momo Trust Display Font */
+@font-face {
+    font-family: 'Momo Trust Display';
+    src: url('https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/momtrustdisplay/MomoTrustDisplay-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 .hero-typewriter {
-    font-family: 'Unbounded', sans-serif;
+    font-family: 'Momo Trust Display', 'Unbounded', sans-serif;
     letter-spacing: -0.02em;
     position: relative;
     min-height: 1.3em;
