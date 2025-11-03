@@ -20,6 +20,37 @@ h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
 }
 
+/* ============================================
+   MOMO TRUST DISPLAY - ALL CONTENT FONT
+   TO UNDO: Comment out or remove this entire section
+   ============================================ */
+body,
+body * {
+    font-family: 'Momo Trust Display', 'Archivo', sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, h6,
+.split-target,
+.hero-typewriter,
+nav,
+footer,
+button,
+a,
+p,
+li,
+span,
+div {
+    font-family: 'Momo Trust Display', 'Archivo', sans-serif !important;
+}
+
+/* Keep original font for icons and special elements */
+.fas, .far, .fab, .fa {
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
+}
+/* ============================================
+   END MOMO TRUST DISPLAY - ALL CONTENT FONT
+   ============================================ */
+
 /* Smooth scrolling for browsers that support it */
 @supports (scroll-behavior: smooth) {
     html {
