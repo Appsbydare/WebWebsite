@@ -209,12 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: 'power2.out'
     }, '-=0.4');
 
-    heroTimeline.from('.hero-cta', {
-        duration: 0.8,
-        y: 35,
-        opacity: 0,
-        ease: 'power3.out'
-    }, '-=0.3');
+    // .hero-cta removed - animation no longer needed
 
     heroTimeline.call(() => {
         setTimeout(animateWord, 250);
