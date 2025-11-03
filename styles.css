@@ -8,6 +8,24 @@
 
 body {
     overflow-x: hidden;
+    font-family: 'Momo Trust Display', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+/* Headers use Montserrat Alternates Bold */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+
+/* Local font face for Momo Trust Display (add files into /fonts) */
+@font-face {
+    font-family: 'Momo Trust Display';
+    src: url('fonts/MomoTrustDisplay.woff2') format('woff2'),
+         url('fonts/MomoTrustDisplay.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
 }
 
 /* Smooth scrolling for browsers that support it */
@@ -23,9 +41,6 @@ body {
     -webkit-text-stroke: 4px black;
     text-stroke: 4px black;
     paint-order: stroke fill;
-    background: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.1) 50%, transparent 100%);
-    background-size: 1000px 100%;
-    animation: shimmer 3s infinite linear;
 }
 
 /* Remove default button styles */
@@ -94,10 +109,9 @@ section {
     position: relative;
 }
 
-/* Animated Gradient Background (Subtle) */
-.bg-black {
-    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-}
+/* Solid backgrounds only (remove gradients) */
+.bg-black { background: #000 !important; }
+.bg-white { background: #fff !important; }
 
 /* Smooth transitions for all interactive elements */
 a, button, .grid > div {
@@ -134,15 +148,10 @@ a, button, .grid > div {
     transform: translateY(30px);
 }
 
-/* Text shimmer effect */
-@keyframes shimmer {
-    0% {
-        background-position: -1000px 0;
-    }
-    100% {
-        background-position: 1000px 0;
-    }
-}
+/* (shimmer removed to avoid gradient-looking backgrounds) */
+
+/* Rounded corners globally for cards and buttons */
+button, .border-4 { border-radius: 12px; }
 
 /* Print styles (if needed) */
 @media print {
