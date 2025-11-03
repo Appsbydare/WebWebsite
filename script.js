@@ -5,11 +5,70 @@
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
 
+const splitStore = new WeakMap();
+
+function splitElement(element) {
+    if (!element || splitStore.has(element)) {
+        return splitStore.get(element) || [];
+    }
+
+    const type = element.dataset.split || 'letters';
+    const original = element.textContent.trim();
+    const fragments = [];
+
+    element.textContent = '';
+
+    if (type === 'words') {
+        const words = original.split(/\s+/).filter(Boolean);
+        words.forEach((word, index) => {
+            const wrap = document.createElement('span');
+            wrap.classList.add('split-wrap');
+
+            const inner = document.createElement('span');
+            inner.classList.add('split-word');
+            inner.textContent = word;
+            wrap.appendChild(inner);
+            element.appendChild(wrap);
+            fragments.push(inner);
+
+            if (index < words.length - 1) {
+                element.appendChild(document.createTextNode(' '));
+            }
+        });
+    } else {
+        for (const char of original) {
+            if (char === ' ') {
+                element.appendChild(document.createTextNode(' '));
+                continue;
+            }
+            const wrap = document.createElement('span');
+            wrap.classList.add('split-wrap');
+
+            const inner = document.createElement('span');
+            inner.classList.add('split-char');
+            inner.textContent = char;
+            wrap.appendChild(inner);
+            element.appendChild(wrap);
+            fragments.push(inner);
+        }
+    }
+
+    splitStore.set(element, fragments);
+    element._splitItems = fragments;
+    return fragments;
+}
+
+function splitAnimatedText() {
+    document.querySelectorAll('.split-target').forEach(splitElement);
+}
+
 // ============================================
 // PAGE LOAD ANIMATIONS
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    splitAnimatedText();
+
     // Animate Navigation on load
     gsap.from('nav', {
         duration: 1,
@@ -20,26 +79,71 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hero Section Entrance
     const heroTimeline = gsap.timeline({ delay: 0.3 });
-    
+
+    const heroLines = gsap.utils
+        .toArray('[data-animation="hero-line"]')
+        .sort((a, b) => (parseInt(a.dataset.order || '0', 10) - parseInt(b.dataset.order || '0', 10)));
+
+    heroLines.forEach((line, index) => {
+        const chars = splitStore.get(line) || [];
+        if (!chars.length) return;
+
+        heroTimeline.from(chars, {
+            yPercent: 110,
+            opacity: 0,
+            duration: 1.1,
+            stagger: 0.045,
+            ease: 'power4.out'
+        }, index === 0 ? 0 : '-=0.6');
+    });
+
     heroTimeline.from('#typewriter', {
-        duration: 1.2,
-        scale: 0.5,
+        duration: 1,
+        y: 35,
         opacity: 0,
-        ease: 'back.out(1.7)'
-    });
+        ease: 'power3.out'
+    }, heroLines.length ? '-=0.5' : 0);
 
-    // Animate CTA buttons
-    gsap.from('section button', {
+    heroTimeline.from('.hero-tagline', {
+        duration: 1,
+        y: 30,
+        opacity: 0,
+        ease: 'power2.out'
+    }, '-=0.4');
+
+    heroTimeline.from('.hero-cta button', {
         duration: 0.8,
-        y: 50,
+        y: 35,
         opacity: 0,
-        stagger: 0.2,
-        ease: 'power3.out',
-        delay: 1
+        stagger: 0.12,
+        ease: 'power3.out'
+    }, '-=0.3');
+
+    heroTimeline.call(() => {
+        setTimeout(typeWriter, 250);
     });
 
-    // Start typewriter animation
-    setTimeout(typeWriter, 1500);
+    // Section Headings (per-word reveal)
+    gsap.utils.toArray('section h2').forEach((heading) => {
+        const splitTargets = Array.from(heading.querySelectorAll('.split-target'));
+        if (!splitTargets.length) return;
+
+        const pieces = splitTargets.flatMap((target) => splitStore.get(target) || []);
+        if (!pieces.length) return;
+
+        gsap.from(pieces, {
+            scrollTrigger: {
+                trigger: heading,
+                start: 'top 85%',
+                toggleActions: 'play none none reverse'
+            },
+            yPercent: 110,
+            opacity: 0,
+            duration: 1.1,
+            stagger: 0.045,
+            ease: 'power4.out'
+        });
+    });
 });
 
 // ============================================
@@ -83,7 +187,7 @@ function typeWriter() {
 // ============================================
 
 // Animate Stats Cards
-gsap.from('#stats section > div > div', {
+gsap.from('#stats .grid > div', {
     scrollTrigger: {
         trigger: '#stats',
         start: 'top 80%',
@@ -150,21 +254,6 @@ gsap.from('#testimonials .grid > div', {
     opacity: 0,
     stagger: 0.2,
     ease: 'power3.out'
-});
-
-// Animate Section Headings
-gsap.utils.toArray('section h2').forEach((heading) => {
-    gsap.from(heading, {
-        scrollTrigger: {
-            trigger: heading,
-            start: 'top 85%',
-            toggleActions: 'play none none reverse'
-        },
-        duration: 1,
-        y: 50,
-        opacity: 0,
-        ease: 'power3.out'
-    });
 });
 
 // ============================================

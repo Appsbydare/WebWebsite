@@ -8,24 +8,16 @@
 
 body {
     overflow-x: hidden;
-    font-family: 'Momo Trust Display', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    font-family: 'Archivo', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    color: #0b0b0b;
+    background-color: #060606;
 }
 
-/* Headers use Montserrat Alternates Bold */
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat Alternates', sans-serif;
+    font-family: 'Archivo Black', sans-serif;
     font-weight: 800;
-    letter-spacing: 0.02em;
-}
-
-/* Local font face for Momo Trust Display (add files into /fonts) */
-@font-face {
-    font-family: 'Momo Trust Display';
-    src: url('fonts/MomoTrustDisplay.woff2') format('woff2'),
-         url('fonts/MomoTrustDisplay.woff') format('woff');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
+    letter-spacing: 0.015em;
+    text-transform: uppercase;
 }
 
 /* Smooth scrolling for browsers that support it */
@@ -38,9 +30,29 @@ h1, h2, h3, h4, h5, h6 {
 /* Outlined Text Effect */
 .text-outlined {
     color: transparent;
-    -webkit-text-stroke: 4px black;
-    text-stroke: 4px black;
+    -webkit-text-stroke: 3px #111111;
+    text-stroke: 3px #111111;
     paint-order: stroke fill;
+}
+
+.hero-typewriter {
+    font-family: 'Unbounded', sans-serif;
+    letter-spacing: -0.015em;
+}
+
+.split-target {
+    display: inline-block;
+}
+
+.split-wrap {
+    display: inline-block;
+    overflow: hidden;
+}
+
+.split-char,
+.split-word {
+    display: inline-block;
+    transform: translateY(110%);
 }
 
 /* Remove default button styles */
