@@ -31,7 +31,6 @@ h1, h2, h3, h4, h5, h6 {
 .text-outlined {
     color: transparent;
     -webkit-text-stroke: 3px #111111;
-    text-stroke: 3px #111111;
     paint-order: stroke fill;
 }
 
@@ -125,6 +124,12 @@ section {
 /* Solid backgrounds only (remove gradients) */
 .bg-black { background: #000 !important; }
 .bg-white { background: #fff !important; }
+
+/* Ensure all content is visible by default (GSAP will handle hiding) */
+.grid > div,
+section > div > div {
+    visibility: visible !important;
+}
 
 /* Smooth transitions for all interactive elements */
 a, button, .grid > div {

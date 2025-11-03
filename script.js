@@ -59,17 +59,60 @@ function splitElement(element) {
 }
 
 function splitAnimatedText() {
-    document.querySelectorAll('.split-target').forEach(splitElement);
+    // Only split hero and heading elements
+    document.querySelectorAll('[data-split][data-animation]').forEach(splitElement);
 }
 
 // ============================================
-// PAGE LOAD ANIMATIONS
+// TYPEWRITER ANIMATION
+// ============================================
+
+const typewriterElement = document.getElementById('typewriter');
+const words = ['INNOVATION', 'CREATIVITY', 'EXCELLENCE'];
+let wordIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
+let typeSpeed = 150;
+
+function typeWriter() {
+    if (!typewriterElement) return;
+    const currentWord = words[wordIndex];
+    
+    if (isDeleting) {
+        typewriterElement.textContent = currentWord.substring(0, charIndex - 1);
+        charIndex--;
+        typeSpeed = 50;
+    } else {
+        typewriterElement.textContent = currentWord.substring(0, charIndex + 1);
+        charIndex++;
+        typeSpeed = 150;
+    }
+    
+    if (!isDeleting && charIndex === currentWord.length) {
+        typeSpeed = 2000;
+        isDeleting = true;
+    } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        wordIndex = (wordIndex + 1) % words.length;
+        typeSpeed = 500;
+    }
+    
+    setTimeout(typeWriter, typeSpeed);
+}
+
+// ============================================
+// MAIN INITIALIZATION
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Split text for animations
     splitAnimatedText();
 
-    // Animate Navigation on load
+    // ========================================
+    // HERO SECTION ANIMATIONS
+    // ========================================
+    
+    // Animate Navigation
     gsap.from('nav', {
         duration: 1,
         y: -100,
@@ -77,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: 'power3.out'
     });
 
-    // Hero Section Entrance
+    // Hero Timeline
     const heroTimeline = gsap.timeline({ delay: 0.3 });
 
     const heroLines = gsap.utils
@@ -88,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const chars = splitStore.get(line) || [];
         if (!chars.length) return;
 
-        // Set initial state
+        // Set initial hidden state
         gsap.set(chars, { yPercent: 110, opacity: 0 });
 
         heroTimeline.to(chars, {
@@ -126,7 +169,10 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(typeWriter, 250);
     });
 
-    // Section Headings (per-word reveal)
+    // ========================================
+    // SCROLL-TRIGGERED SECTION HEADINGS
+    // ========================================
+    
     gsap.utils.toArray('section h2').forEach((heading) => {
         const splitTargets = Array.from(heading.querySelectorAll('.split-target'));
         if (!splitTargets.length) return;
@@ -150,218 +196,197 @@ document.addEventListener('DOMContentLoaded', () => {
             ease: 'power4.out'
         });
     });
-});
 
-// ============================================
-// TYPEWRITER ANIMATION (Enhanced)
-// ============================================
-
-const typewriterElement = document.getElementById('typewriter');
-const words = ['INNOVATION', 'CREATIVITY', 'EXCELLENCE'];
-let wordIndex = 0;
-let charIndex = 0;
-let isDeleting = false;
-let typeSpeed = 150;
-
-function typeWriter() {
-    const currentWord = words[wordIndex];
+    // ========================================
+    // SCROLL-TRIGGERED CARDS & CONTENT
+    // ========================================
     
-    if (isDeleting) {
-        typewriterElement.textContent = currentWord.substring(0, charIndex - 1);
-        charIndex--;
-        typeSpeed = 50;
-    } else {
-        typewriterElement.textContent = currentWord.substring(0, charIndex + 1);
-        charIndex++;
-        typeSpeed = 150;
-    }
-    
-    if (!isDeleting && charIndex === currentWord.length) {
-        typeSpeed = 2000;
-        isDeleting = true;
-    } else if (isDeleting && charIndex === 0) {
-        isDeleting = false;
-        wordIndex = (wordIndex + 1) % words.length;
-        typeSpeed = 500;
-    }
-    
-    setTimeout(typeWriter, typeSpeed);
-}
-
-// ============================================
-// SCROLL-TRIGGERED ANIMATIONS
-// ============================================
-
-// Animate Stats Cards
-gsap.from('#stats .grid > div', {
-    scrollTrigger: {
-        trigger: '#stats',
-        start: 'top 80%',
-        toggleActions: 'play none none reverse'
-    },
-    duration: 0.8,
-    y: 100,
-    opacity: 0,
-    stagger: 0.15,
-    ease: 'power3.out'
-});
-
-// Animate Service Cards
-gsap.from('#services .grid > div', {
-    scrollTrigger: {
-        trigger: '#services',
-        start: 'top 70%',
-        toggleActions: 'play none none reverse'
-    },
-    duration: 1,
-    y: 80,
-    opacity: 0,
-    stagger: 0.2,
-    ease: 'power3.out'
-});
-
-// Animate Case Study Cards
-gsap.from('#cases .grid > div', {
-    scrollTrigger: {
-        trigger: '#cases',
-        start: 'top 70%',
-        toggleActions: 'play none none reverse'
-    },
-    duration: 1,
-    scale: 0.8,
-    opacity: 0,
-    stagger: 0.2,
-    ease: 'back.out(1.2)'
-});
-
-// Animate Process Steps
-gsap.from('#process .grid > div', {
-    scrollTrigger: {
-        trigger: '#process',
-        start: 'top 70%',
-        toggleActions: 'play none none reverse'
-    },
-    duration: 0.8,
-    y: 60,
-    opacity: 0,
-    stagger: 0.1,
-    ease: 'power2.out'
-});
-
-// Animate Testimonials
-gsap.from('#testimonials .grid > div', {
-    scrollTrigger: {
-        trigger: '#testimonials',
-        start: 'top 70%',
-        toggleActions: 'play none none reverse'
-    },
-    duration: 1,
-    x: (index) => (index % 2 === 0 ? -100 : 100),
-    opacity: 0,
-    stagger: 0.2,
-    ease: 'power3.out'
-});
-
-// ============================================
-// MAGNETIC BUTTON EFFECT
-// ============================================
-
-const buttons = document.querySelectorAll('button');
-
-buttons.forEach(button => {
-    button.addEventListener('mouseenter', (e) => {
-        gsap.to(button, {
-            scale: 1.05,
-            duration: 0.3,
-            ease: 'power2.out'
-        });
-    });
-
-    button.addEventListener('mouseleave', (e) => {
-        gsap.to(button, {
-            scale: 1,
-            duration: 0.3,
-            ease: 'power2.out'
-        });
-    });
-
-    button.addEventListener('mousemove', (e) => {
-        const rect = button.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-
-        gsap.to(button, {
-            x: x * 0.3,
-            y: y * 0.3,
-            duration: 0.3,
-            ease: 'power2.out'
-        });
-    });
-
-    button.addEventListener('mouseleave', () => {
-        gsap.to(button, {
-            x: 0,
+    // Stats Cards
+    const statsCards = gsap.utils.toArray('#stats .grid > div');
+    if (statsCards.length) {
+        gsap.set(statsCards, { y: 100, opacity: 0 });
+        gsap.to(statsCards, {
+            scrollTrigger: {
+                trigger: '#stats',
+                start: 'top 80%',
+                toggleActions: 'play none none reverse'
+            },
+            duration: 0.8,
             y: 0,
+            opacity: 1,
+            stagger: 0.15,
+            ease: 'power3.out'
+        });
+    }
+
+    // Service Cards
+    const serviceCards = gsap.utils.toArray('#services .grid > div');
+    if (serviceCards.length) {
+        gsap.set(serviceCards, { y: 80, opacity: 0 });
+        gsap.to(serviceCards, {
+            scrollTrigger: {
+                trigger: '#services',
+                start: 'top 70%',
+                toggleActions: 'play none none reverse'
+            },
+            duration: 1,
+            y: 0,
+            opacity: 1,
+            stagger: 0.2,
+            ease: 'power3.out'
+        });
+    }
+
+    // Case Study Cards
+    const caseCards = gsap.utils.toArray('#cases .grid > div');
+    if (caseCards.length) {
+        gsap.set(caseCards, { scale: 0.8, opacity: 0 });
+        gsap.to(caseCards, {
+            scrollTrigger: {
+                trigger: '#cases',
+                start: 'top 70%',
+                toggleActions: 'play none none reverse'
+            },
+            duration: 1,
             scale: 1,
-            duration: 0.5,
-            ease: 'elastic.out(1, 0.3)'
+            opacity: 1,
+            stagger: 0.2,
+            ease: 'back.out(1.2)'
+        });
+    }
+
+    // Process Steps
+    const processCards = gsap.utils.toArray('#process .grid > div');
+    if (processCards.length) {
+        gsap.set(processCards, { y: 60, opacity: 0 });
+        gsap.to(processCards, {
+            scrollTrigger: {
+                trigger: '#process',
+                start: 'top 70%',
+                toggleActions: 'play none none reverse'
+            },
+            duration: 0.8,
+            y: 0,
+            opacity: 1,
+            stagger: 0.1,
+            ease: 'power2.out'
+        });
+    }
+
+    // Testimonials
+    const testimonialCards = gsap.utils.toArray('#testimonials .grid > div');
+    if (testimonialCards.length) {
+        testimonialCards.forEach((card, index) => {
+            gsap.set(card, { x: index % 2 === 0 ? -100 : 100, opacity: 0 });
+        });
+        gsap.to(testimonialCards, {
+            scrollTrigger: {
+                trigger: '#testimonials',
+                start: 'top 70%',
+                toggleActions: 'play none none reverse'
+            },
+            duration: 1,
+            x: 0,
+            opacity: 1,
+            stagger: 0.2,
+            ease: 'power3.out'
+        });
+    }
+
+    // ========================================
+    // MAGNETIC BUTTON EFFECT
+    // ========================================
+    
+    const buttons = document.querySelectorAll('button');
+
+    buttons.forEach(button => {
+        button.addEventListener('mouseenter', (e) => {
+            gsap.to(button, {
+                scale: 1.05,
+                duration: 0.3,
+                ease: 'power2.out'
+            });
+        });
+
+        button.addEventListener('mouseleave', (e) => {
+            gsap.to(button, {
+                scale: 1,
+                duration: 0.3,
+                ease: 'power2.out'
+            });
+        });
+
+        button.addEventListener('mousemove', (e) => {
+            const rect = button.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+
+            gsap.to(button, {
+                x: x * 0.3,
+                y: y * 0.3,
+                duration: 0.3,
+                ease: 'power2.out'
+            });
+        });
+
+        button.addEventListener('mouseleave', () => {
+            gsap.to(button, {
+                x: 0,
+                y: 0,
+                scale: 1,
+                duration: 0.5,
+                ease: 'elastic.out(1, 0.3)'
+            });
+        });
+    });
+
+    // ========================================
+    // PARALLAX EFFECT FOR ICONS
+    // ========================================
+    
+    gsap.utils.toArray('.fas, .far, .fab').forEach((icon) => {
+        gsap.to(icon, {
+            scrollTrigger: {
+                trigger: icon,
+                start: 'top bottom',
+                end: 'bottom top',
+                scrub: 1
+            },
+            y: -30,
+            ease: 'none'
         });
     });
 });
 
 // ============================================
-// PARALLAX EFFECT FOR ICONS
+// MOBILE MENU & NAVIGATION
 // ============================================
-
-gsap.utils.toArray('.fas, .far, .fab').forEach((icon) => {
-    gsap.to(icon, {
-        scrollTrigger: {
-            trigger: icon,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1
-        },
-        y: -30,
-        ease: 'none'
-    });
-});
-
-// ============================================
-// SMOOTH SCROLL
-// ============================================
-
-gsap.to('html', {
-    scrollTrigger: {
-        trigger: 'body',
-        start: 'top top',
-        end: 'bottom bottom',
-        scrub: 1
-    }
-});
 
 // Mobile Menu Toggle
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
 const mobileMenu = document.getElementById('mobile-menu');
 
-mobileMenuBtn.addEventListener('click', () => {
-    mobileMenu.classList.toggle('hidden');
-    
-    // Toggle hamburger icon
-    if (mobileMenu.classList.contains('hidden')) {
-        mobileMenuBtn.textContent = '☰';
-    } else {
-        mobileMenuBtn.textContent = '✕';
-    }
-});
-
-// Close mobile menu when clicking on a link
-const mobileMenuLinks = mobileMenu.querySelectorAll('a');
-mobileMenuLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        mobileMenu.classList.add('hidden');
-        mobileMenuBtn.textContent = '☰';
+if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        
+        // Toggle hamburger icon
+        if (mobileMenu.classList.contains('hidden')) {
+            mobileMenuBtn.textContent = '☰';
+        } else {
+            mobileMenuBtn.textContent = '✕';
+        }
     });
-});
+
+    // Close mobile menu when clicking on a link
+    const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+    mobileMenuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            mobileMenuBtn.textContent = '☰';
+        });
+    });
+}
 
 // Smooth scroll for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -378,19 +403,16 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Add scroll effect to navigation (optional - adds shadow on scroll)
-let lastScroll = 0;
+// Add scroll effect to navigation
 const nav = document.querySelector('nav');
-
-window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    
-    if (currentScroll > 50) {
-        nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-    } else {
-        nav.style.boxShadow = 'none';
-    }
-    
-    lastScroll = currentScroll;
-});
-
+if (nav) {
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        
+        if (currentScroll > 50) {
+            nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+        } else {
+            nav.style.boxShadow = 'none';
+        }
+    });
+}
