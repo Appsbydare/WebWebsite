@@ -314,7 +314,7 @@ a, button, .grid > div {
 /* Better focus states for accessibility */
 button:focus-visible,
 a:focus-visible {
-    outline: 4px solid #002060;
+    outline: 4px solid #000138;
     outline-offset: 4px;
 }
 
@@ -443,13 +443,13 @@ a:focus-visible {
 
 /* Box Card Styling - Navy color, rounded corners, and shadow */
 .box-card {
-    border-color: #002060 !important;
-    box-shadow: 0 4px 6px rgba(0, 32, 96, 0.3), 0 2px 4px rgba(0, 32, 96, 0.2);
+    border-color: #000138 !important;
+    box-shadow: 0 4px 6px rgba(0, 1, 56, 0.3), 0 2px 4px rgba(0, 1, 56, 0.2);
     transition: all 0.3s ease;
 }
 
 .box-card:hover {
-    box-shadow: 0 8px 12px rgba(0, 32, 96, 0.4), 0 4px 8px rgba(0, 32, 96, 0.3);
+    box-shadow: 0 8px 12px rgba(0, 1, 56, 0.4), 0 4px 8px rgba(0, 1, 56, 0.3);
 }
 
 /* Glass button style for CTA */
@@ -492,7 +492,7 @@ a:focus-visible {
 .footer-logo-icon {
     width: 40px;
     height: 40px;
-    background: #002060;
+    background: #000138;
     display: flex;
     align-items: center;
     justify-content: center;
