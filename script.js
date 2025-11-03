@@ -173,6 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hero Timeline - reduced initial delay
     const heroTimeline = gsap.timeline({ delay: 0.1 });
 
+    // Make typewriter container visible immediately (no fade-in delay)
+    gsap.set('#typewriter', { opacity: 1, y: 0 });
+
     // Animate hero headings
     const heroHeadings = document.querySelectorAll('section:first-of-type .split-target[data-animation="heading-left"], section:first-of-type .split-target[data-animation="heading-right"]');
     
@@ -195,20 +198,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }, index === 0 ? 0 : '-=0.8');
     });
 
-    // Start typewriter animation immediately when headers finish
-    heroTimeline.from('#typewriter', {
-        duration: 1,
-        y: 35,
-        opacity: 0,
-        ease: 'power3.out'
-    }, '-=0.5'); // Start sooner, overlapping with headers
-
-    // .hero-cta removed - animation no longer needed
-
-    // Start word animation immediately after typewriter appears
+    // Start word animation immediately when headers start appearing
     heroTimeline.call(() => {
-        setTimeout(animateWord, 0); // Start immediately
-    });
+        animateWord(); // Start immediately, no delay
+    }, 0); // Start at the same time as headers
 
     // Tagline appears after first word animation completes
     // For a word with ~10 letters: last letter delay = 9 * 0.16 = 1.44s, duration = 2.4s, total ≈ 4s
