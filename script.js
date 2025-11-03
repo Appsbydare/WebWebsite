@@ -173,27 +173,75 @@ document.addEventListener('DOMContentLoaded', () => {
     // SCROLL-TRIGGERED SECTION HEADINGS
     // ========================================
     
-    gsap.utils.toArray('section h2').forEach((heading) => {
-        const splitTargets = Array.from(heading.querySelectorAll('.split-target'));
-        if (!splitTargets.length) return;
+    // Heading animations from left
+    gsap.utils.toArray('[data-animation="heading-left"]').forEach((element) => {
+        const chars = splitStore.get(element) || [];
+        if (!chars.length) return;
 
-        const pieces = splitTargets.flatMap((target) => splitStore.get(target) || []);
-        if (!pieces.length) return;
+        // Set initial state: from left
+        gsap.set(chars, { x: -100, opacity: 0 });
 
-        // Set initial state
-        gsap.set(pieces, { yPercent: 110, opacity: 0 });
-
-        gsap.to(pieces, {
+        gsap.to(chars, {
             scrollTrigger: {
-                trigger: heading,
+                trigger: element,
                 start: 'top 85%',
                 toggleActions: 'play none none reverse'
             },
-            yPercent: 0,
+            x: 0,
             opacity: 1,
-            duration: 1.1,
-            stagger: 0.045,
-            ease: 'power4.out'
+            duration: 1.2,
+            stagger: 0.05,
+            ease: 'power4.out',
+            onComplete: function() {
+                // Add subtle random movement after entering
+                chars.forEach((char, index) => {
+                    gsap.to(char, {
+                        x: () => gsap.utils.random(-3, 3),
+                        y: () => gsap.utils.random(-2, 2),
+                        duration: gsap.utils.random(2, 4),
+                        repeat: -1,
+                        yoyo: true,
+                        ease: 'sine.inOut',
+                        delay: index * 0.05
+                    });
+                });
+            }
+        });
+    });
+
+    // Heading animations from right
+    gsap.utils.toArray('[data-animation="heading-right"]').forEach((element) => {
+        const chars = splitStore.get(element) || [];
+        if (!chars.length) return;
+
+        // Set initial state: from right
+        gsap.set(chars, { x: 100, opacity: 0 });
+
+        gsap.to(chars, {
+            scrollTrigger: {
+                trigger: element,
+                start: 'top 85%',
+                toggleActions: 'play none none reverse'
+            },
+            x: 0,
+            opacity: 1,
+            duration: 1.2,
+            stagger: 0.05,
+            ease: 'power4.out',
+            onComplete: function() {
+                // Add subtle random movement after entering
+                chars.forEach((char, index) => {
+                    gsap.to(char, {
+                        x: () => gsap.utils.random(-3, 3),
+                        y: () => gsap.utils.random(-2, 2),
+                        duration: gsap.utils.random(2, 4),
+                        repeat: -1,
+                        yoyo: true,
+                        ease: 'sine.inOut',
+                        delay: index * 0.05
+                    });
+                });
+            }
         });
     });
 

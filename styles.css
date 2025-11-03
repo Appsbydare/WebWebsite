@@ -30,8 +30,14 @@ h1, h2, h3, h4, h5, h6 {
 /* Outlined Text Effect */
 .text-outlined {
     color: transparent;
-    -webkit-text-stroke: 3px #111111;
+    -webkit-text-stroke: 3px #1a1d24;
     paint-order: stroke fill;
+}
+
+/* Outlined text on dark backgrounds */
+section[class*="bg-[#0"]:not([class*="bg-[#0f"]):not([class*="bg-[#0b"]) .text-outlined,
+section[class*="bg-[#1"] .text-outlined {
+    -webkit-text-stroke: 3px #ffffff;
 }
 
 .hero-typewriter {
