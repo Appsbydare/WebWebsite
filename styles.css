@@ -83,6 +83,17 @@ section[class*="bg-[#1"] .text-outlined {
     font-display: swap;
 }
 
+/* Use Momo Trust Display for paragraphs and footer text only (regular weight) */
+p,
+footer p,
+footer a,
+footer li,
+footer small,
+footer span:not(.fa):not(.fas):not(.far):not(.fab) {
+    font-family: 'Momo Trust Display', 'Archivo', sans-serif !important;
+    font-weight: 400 !important;
+}
+
 .hero-typewriter {
     font-family: 'Momo Trust Display', 'Unbounded', sans-serif;
     letter-spacing: -0.02em;
