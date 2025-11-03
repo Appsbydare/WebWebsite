@@ -21,17 +21,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ============================================
-   MOMO TRUST DISPLAY - ALL CONTENT FONT
+   MOMO TRUST DISPLAY - ALL CONTENT FONT (EXCEPT MAIN HEADINGS)
    TO UNDO: Comment out or remove this entire section
    ============================================ */
+
+/* Apply Momo Trust Display to body and all content except main headings */
 body,
-body * {
+body *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(.split-target) {
     font-family: 'Momo Trust Display', 'Archivo', sans-serif !important;
 }
 
-h1, h2, h3, h4, h5, h6,
-.split-target,
-.hero-typewriter,
+/* Apply to specific elements */
 nav,
 footer,
 button,
@@ -39,14 +39,36 @@ a,
 p,
 li,
 span,
-div {
+div:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6),
+.hero-typewriter {
     font-family: 'Momo Trust Display', 'Archivo', sans-serif !important;
+}
+
+/* Remove bold from small text elements */
+p,
+li,
+span,
+a,
+.footer-description,
+.footer-links a,
+.footer-copyright,
+.footer-disclaimer,
+button:not(.font-black):not(.font-bold),
+div:not(.font-black):not(.font-bold) {
+    font-weight: 400 !important;
 }
 
 /* Keep original font for icons and special elements */
 .fas, .far, .fab, .fa {
     font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands" !important;
 }
+
+/* Keep original fonts for main headings */
+h1, h2, h3, h4, h5, h6,
+.split-target {
+    font-family: 'Archivo Black', sans-serif !important;
+}
+
 /* ============================================
    END MOMO TRUST DISPLAY - ALL CONTENT FONT
    ============================================ */
