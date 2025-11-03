@@ -35,8 +35,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Outlined text on dark backgrounds */
-section[class*="bg-[#0"]:not([class*="bg-[#0f"]):not([class*="bg-[#0b"]) .text-outlined,
+section[class*="bg-[#0"] .text-outlined,
 section[class*="bg-[#1"] .text-outlined {
+    -webkit-text-stroke: 1.5px #ffffff;
+}
+
+/* Specifically for Why Choose section */
+#stats .text-outlined {
     -webkit-text-stroke: 1.5px #ffffff;
 }
 
@@ -335,5 +340,16 @@ a:focus-visible {
 .menu-overlay.active {
     opacity: 1;
     visibility: visible;
+}
+
+/* Box Card Styling - Navy color, rounded corners, and shadow */
+.box-card {
+    border-color: #1e3a8a !important;
+    box-shadow: 0 4px 6px rgba(30, 58, 138, 0.3), 0 2px 4px rgba(30, 58, 138, 0.2);
+    transition: all 0.3s ease;
+}
+
+.box-card:hover {
+    box-shadow: 0 8px 12px rgba(30, 58, 138, 0.4), 0 4px 8px rgba(30, 58, 138, 0.3);
 }
 

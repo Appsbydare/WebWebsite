@@ -533,10 +533,7 @@ function openMenu() {
     document.body.style.overflow = 'hidden';
 }
 
-// Open menu from hero section
-if (menuIconBtn) {
-    menuIconBtn.addEventListener('click', openMenu);
-}
+// Menu icon button removed from hero section - only nav menu icon exists now
 
 // Open menu from navigation bar
 if (navMenuIconBtn) {
