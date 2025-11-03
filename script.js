@@ -88,9 +88,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const chars = splitStore.get(line) || [];
         if (!chars.length) return;
 
-        heroTimeline.from(chars, {
-            yPercent: 110,
-            opacity: 0,
+        // Set initial state
+        gsap.set(chars, { yPercent: 110, opacity: 0 });
+
+        heroTimeline.to(chars, {
+            yPercent: 0,
+            opacity: 1,
             duration: 1.1,
             stagger: 0.045,
             ease: 'power4.out'
@@ -131,14 +134,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const pieces = splitTargets.flatMap((target) => splitStore.get(target) || []);
         if (!pieces.length) return;
 
-        gsap.from(pieces, {
+        // Set initial state
+        gsap.set(pieces, { yPercent: 110, opacity: 0 });
+
+        gsap.to(pieces, {
             scrollTrigger: {
                 trigger: heading,
                 start: 'top 85%',
                 toggleActions: 'play none none reverse'
             },
-            yPercent: 110,
-            opacity: 0,
+            yPercent: 0,
+            opacity: 1,
             duration: 1.1,
             stagger: 0.045,
             ease: 'power4.out'
