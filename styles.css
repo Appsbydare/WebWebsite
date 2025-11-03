@@ -129,6 +129,18 @@ footer span:not(.fa):not(.fas):not(.far):not(.fab) {
     margin-bottom: 0.5rem !important;
 }
 
+/* Image fill for animated text characters */
+.hero-typewriter .word,
+.hero-typewriter .char {
+    background-image: url('images/12.jpg');
+    background-size: cover;
+    background-position: center;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
 @media (min-width: 640px) {
     .hero-typewriter {
         font-size: 9rem !important; /* 2x text-7xl (4.5rem) */
