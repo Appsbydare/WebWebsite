@@ -210,13 +210,14 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(animateWord, 100);
     });
 
-    // Tagline appears after animation section completes
+    // Tagline appears after first word animation completes
+    // For a word with ~10 letters: last letter delay = 9 * 0.16 = 1.44s, duration = 2.4s, total ≈ 4s
     heroTimeline.from('.hero-tagline', {
         duration: 1,
         y: 30,
         opacity: 0,
         ease: 'power2.out'
-    }, '+=0.5'); // Wait after animation starts
+    }, '+=4.5'); // Wait for first word animation to complete
 
     // ========================================
     // SCROLL-TRIGGERED SECTION HEADINGS
