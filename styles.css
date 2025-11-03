@@ -112,7 +112,7 @@ footer span:not(.fa):not(.fas):not(.far):not(.fab) {
 }
 
 .hero-typewriter {
-    font-family: 'BebasNeue', 'Unbounded', sans-serif;
+    font-family: 'BebasNeue', 'Unbounded', sans-serif !important;
     letter-spacing: -0.02em;
     position: relative;
     min-height: 1.3em;
@@ -125,11 +125,19 @@ footer span:not(.fa):not(.fas):not(.far):not(.fab) {
 .hero-typewriter .word {
     display: inline-block;
     white-space: nowrap;
+    font-family: 'BebasNeue', 'Unbounded', sans-serif !important;
 }
 
 .hero-typewriter .word .char {
     display: inline-block;
     opacity: 0;
+    font-family: 'BebasNeue', 'Unbounded', sans-serif !important;
+}
+
+/* Ensure BebasNeue is applied to all typewriter elements */
+#typewriter,
+#typewriter * {
+    font-family: 'BebasNeue', 'Unbounded', sans-serif !important;
 }
 
 .split-target {
