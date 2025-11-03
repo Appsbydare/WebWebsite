@@ -126,20 +126,24 @@ function addAndAnimateNewWord(newWordElement) {
     const chars = newWordElement.querySelectorAll('.char');
     const midPoint = Math.floor(chars.length / 2);
     
+    // Calculate distance from window border (start further out)
+    const windowWidth = window.innerWidth;
+    const startDistance = windowWidth * 0.5; // Start from 50% of window width away
+    
     chars.forEach((char, index) => {
         // Characters on left half come from left, right half from right
         const fromLeft = index < midPoint;
         
         gsap.fromTo(char, 
             {
-                x: fromLeft ? -80 : 80,
+                x: fromLeft ? -startDistance : startDistance,
                 opacity: 0
             },
             {
                 x: 0,
                 opacity: 1,
-                duration: 0.7,
-                delay: index * 0.05,
+                duration: 1.2,
+                delay: index * 0.08,
                 ease: 'power3.out'
             }
         );
