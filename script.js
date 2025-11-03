@@ -97,16 +97,28 @@ function animateWord() {
     if (currentWordElement) {
         gsap.to(currentWordElement, {
             opacity: 0,
-            duration: 0.5,
+            duration: 0.6,
             onComplete: () => {
                 if (currentWordElement && currentWordElement.parentNode) {
                     currentWordElement.remove();
                 }
+                // After old word is removed, add and animate new word
+                addAndAnimateNewWord(newWordElement);
             }
         });
+    } else {
+        // First word, just add and animate
+        addAndAnimateNewWord(newWordElement);
     }
     
+    // Schedule next word
+    wordIndex = (wordIndex + 1) % words.length;
+    setTimeout(animateWord, 3500);
+}
+
+function addAndAnimateNewWord(newWordElement) {
     // Add new word
+    typewriterElement.innerHTML = '';
     typewriterElement.appendChild(newWordElement);
     currentWordElement = newWordElement;
     
@@ -120,22 +132,18 @@ function animateWord() {
         
         gsap.fromTo(char, 
             {
-                x: fromLeft ? -100 : 100,
+                x: fromLeft ? -80 : 80,
                 opacity: 0
             },
             {
                 x: 0,
                 opacity: 1,
-                duration: 0.6,
+                duration: 0.7,
                 delay: index * 0.05,
                 ease: 'power3.out'
             }
         );
     });
-    
-    // Schedule next word
-    wordIndex = (wordIndex + 1) % words.length;
-    setTimeout(animateWord, 3000);
 }
 
 // ============================================
