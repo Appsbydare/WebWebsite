@@ -169,24 +169,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hero Timeline
     const heroTimeline = gsap.timeline({ delay: 0.3 });
 
-    const heroLines = gsap.utils
-        .toArray('[data-animation="hero-line"]')
-        .sort((a, b) => (parseInt(a.dataset.order || '0', 10) - parseInt(b.dataset.order || '0', 10)));
-
-    heroLines.forEach((line, index) => {
-        const chars = splitStore.get(line) || [];
+    // Animate hero headings
+    const heroHeadings = document.querySelectorAll('section:first-of-type .split-target[data-animation="heading-left"], section:first-of-type .split-target[data-animation="heading-right"]');
+    
+    heroHeadings.forEach((element, index) => {
+        const chars = splitStore.get(element) || [];
         if (!chars.length) return;
 
-        // Set initial hidden state
-        gsap.set(chars, { yPercent: 110, opacity: 0 });
+        const animType = element.dataset.animation;
+        const fromX = animType === 'heading-left' ? -100 : 100;
+
+        // Set initial state
+        gsap.set(chars, { x: fromX, opacity: 0 });
 
         heroTimeline.to(chars, {
-            yPercent: 0,
+            x: 0,
             opacity: 1,
-            duration: 1.1,
-            stagger: 0.045,
+            duration: 1.2,
+            stagger: 0.05,
             ease: 'power4.out'
-        }, index === 0 ? 0 : '-=0.6');
+        }, index === 0 ? 0 : '-=0.8');
     });
 
     heroTimeline.from('#typewriter', {
@@ -194,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
         y: 35,
         opacity: 0,
         ease: 'power3.out'
-    }, heroLines.length ? '-=0.5' : 0);
+    }, '-=0.3');
 
     heroTimeline.from('.hero-tagline', {
         duration: 1,
@@ -203,11 +205,10 @@ document.addEventListener('DOMContentLoaded', () => {
         ease: 'power2.out'
     }, '-=0.4');
 
-    heroTimeline.from('.hero-cta button', {
+    heroTimeline.from('.hero-cta', {
         duration: 0.8,
         y: 35,
         opacity: 0,
-        stagger: 0.12,
         ease: 'power3.out'
     }, '-=0.3');
 
@@ -510,3 +511,47 @@ if (nav) {
         }
     });
 }
+
+// ============================================
+// SLIDE-IN MENU
+// ============================================
+
+const menuIconBtn = document.getElementById('menu-icon-btn');
+const slideMenu = document.getElementById('slide-menu');
+const closeMenuBtn = document.getElementById('close-menu-btn');
+
+// Create overlay element
+const menuOverlay = document.createElement('div');
+menuOverlay.className = 'menu-overlay';
+document.body.appendChild(menuOverlay);
+
+// Open menu
+if (menuIconBtn) {
+    menuIconBtn.addEventListener('click', () => {
+        slideMenu.classList.add('active');
+        menuOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+}
+
+// Close menu
+function closeMenu() {
+    slideMenu.classList.remove('active');
+    menuOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+if (closeMenuBtn) {
+    closeMenuBtn.addEventListener('click', closeMenu);
+}
+
+if (menuOverlay) {
+    menuOverlay.addEventListener('click', closeMenu);
+}
+
+// Close menu on ESC key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && slideMenu.classList.contains('active')) {
+        closeMenu();
+    }
+});
