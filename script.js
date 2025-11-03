@@ -111,9 +111,9 @@ function animateWord() {
         addAndAnimateNewWord(newWordElement);
     }
     
-    // Schedule next word
+    // Schedule next word (slower timing)
     wordIndex = (wordIndex + 1) % words.length;
-    setTimeout(animateWord, 3500);
+    setTimeout(animateWord, 5000); // Increased pause between words
 }
 
 function addAndAnimateNewWord(newWordElement) {
@@ -142,8 +142,8 @@ function addAndAnimateNewWord(newWordElement) {
             {
                 x: 0,
                 opacity: 1,
-                duration: 1.2,
-                delay: index * 0.08,
+                duration: 2.4, // Slower by 100% (doubled from 1.2s)
+                delay: index * 0.16, // Slower by 100% (doubled from 0.08s)
                 ease: 'power3.out'
             }
         );
@@ -195,25 +195,28 @@ document.addEventListener('DOMContentLoaded', () => {
         }, index === 0 ? 0 : '-=0.8');
     });
 
+    // Start typewriter animation when headers finish (no delay)
     heroTimeline.from('#typewriter', {
         duration: 1,
         y: 35,
         opacity: 0,
         ease: 'power3.out'
-    }, '-=0.3');
+    }, '-=0.1'); // Start almost immediately after headers
 
+    // .hero-cta removed - animation no longer needed
+
+    // Start word animation immediately after typewriter appears
+    heroTimeline.call(() => {
+        setTimeout(animateWord, 100);
+    });
+
+    // Tagline appears after animation section completes
     heroTimeline.from('.hero-tagline', {
         duration: 1,
         y: 30,
         opacity: 0,
         ease: 'power2.out'
-    }, '-=0.4');
-
-    // .hero-cta removed - animation no longer needed
-
-    heroTimeline.call(() => {
-        setTimeout(animateWord, 250);
-    });
+    }, '+=0.5'); // Wait after animation starts
 
     // ========================================
     // SCROLL-TRIGGERED SECTION HEADINGS
