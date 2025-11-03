@@ -64,40 +64,78 @@ function splitAnimatedText() {
 }
 
 // ============================================
-// TYPEWRITER ANIMATION
+// WORD ANIMATION (LETTERS FROM LEFT/RIGHT)
 // ============================================
 
 const typewriterElement = document.getElementById('typewriter');
 const words = ['INNOVATION', 'CREATIVITY', 'EXCELLENCE'];
 let wordIndex = 0;
-let charIndex = 0;
-let isDeleting = false;
-let typeSpeed = 150;
+let currentWordElement = null;
 
-function typeWriter() {
+function createWordElement(word) {
+    const wordDiv = document.createElement('div');
+    wordDiv.className = 'word';
+    
+    const chars = word.split('');
+    chars.forEach((char, index) => {
+        const charSpan = document.createElement('span');
+        charSpan.className = 'char';
+        charSpan.textContent = char;
+        wordDiv.appendChild(charSpan);
+    });
+    
+    return wordDiv;
+}
+
+function animateWord() {
     if (!typewriterElement) return;
-    const currentWord = words[wordIndex];
     
-    if (isDeleting) {
-        typewriterElement.textContent = currentWord.substring(0, charIndex - 1);
-        charIndex--;
-        typeSpeed = 50;
-    } else {
-        typewriterElement.textContent = currentWord.substring(0, charIndex + 1);
-        charIndex++;
-        typeSpeed = 150;
+    const newWord = words[wordIndex];
+    const newWordElement = createWordElement(newWord);
+    
+    // Fade out and remove old word if exists
+    if (currentWordElement) {
+        gsap.to(currentWordElement, {
+            opacity: 0,
+            duration: 0.5,
+            onComplete: () => {
+                if (currentWordElement && currentWordElement.parentNode) {
+                    currentWordElement.remove();
+                }
+            }
+        });
     }
     
-    if (!isDeleting && charIndex === currentWord.length) {
-        typeSpeed = 2000;
-        isDeleting = true;
-    } else if (isDeleting && charIndex === 0) {
-        isDeleting = false;
-        wordIndex = (wordIndex + 1) % words.length;
-        typeSpeed = 500;
-    }
+    // Add new word
+    typewriterElement.appendChild(newWordElement);
+    currentWordElement = newWordElement;
     
-    setTimeout(typeWriter, typeSpeed);
+    // Animate characters from left and right
+    const chars = newWordElement.querySelectorAll('.char');
+    const midPoint = Math.floor(chars.length / 2);
+    
+    chars.forEach((char, index) => {
+        // Characters on left half come from left, right half from right
+        const fromLeft = index < midPoint;
+        
+        gsap.fromTo(char, 
+            {
+                x: fromLeft ? -100 : 100,
+                opacity: 0
+            },
+            {
+                x: 0,
+                opacity: 1,
+                duration: 0.6,
+                delay: index * 0.05,
+                ease: 'power3.out'
+            }
+        );
+    });
+    
+    // Schedule next word
+    wordIndex = (wordIndex + 1) % words.length;
+    setTimeout(animateWord, 3000);
 }
 
 // ============================================
@@ -166,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, '-=0.3');
 
     heroTimeline.call(() => {
-        setTimeout(typeWriter, 250);
+        setTimeout(animateWord, 250);
     });
 
     // ========================================
