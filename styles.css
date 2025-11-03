@@ -458,6 +458,7 @@ a:focus-visible {
 
 .footer-heading {
     font-size: 2rem; /* increased 100% */
+    font-family: 'Momo Trust Display', 'Archivo', sans-serif;
     font-weight: 600;
     color: #ffffff;
     margin-bottom: 12px;
