@@ -93,11 +93,14 @@ function animateWord() {
     const newWord = words[wordIndex];
     const newWordElement = createWordElement(newWord);
     
-    // Fade out and remove old word if exists
+    // Fade out and blur/vanish old word if exists
     if (currentWordElement) {
         gsap.to(currentWordElement, {
             opacity: 0,
-            duration: 0.6,
+            filter: 'blur(20px)',
+            scale: 0.8,
+            duration: 0.8,
+            ease: 'power2.in',
             onComplete: () => {
                 if (currentWordElement && currentWordElement.parentNode) {
                     currentWordElement.remove();
@@ -111,9 +114,9 @@ function animateWord() {
         addAndAnimateNewWord(newWordElement);
     }
     
-    // Schedule next word (slower timing)
+    // Schedule next word (increased display time)
     wordIndex = (wordIndex + 1) % words.length;
-    setTimeout(animateWord, 5000); // Increased pause between words
+    setTimeout(animateWord, 7000); // Increased from 5s to 7s for longer display time
 }
 
 function addAndAnimateNewWord(newWordElement) {
@@ -121,6 +124,13 @@ function addAndAnimateNewWord(newWordElement) {
     typewriterElement.innerHTML = '';
     typewriterElement.appendChild(newWordElement);
     currentWordElement = newWordElement;
+    
+    // Set initial state with blur and scale
+    gsap.set(newWordElement, {
+        filter: 'blur(20px)',
+        scale: 0.8,
+        opacity: 0
+    });
     
     // Animate characters from left and right
     const chars = newWordElement.querySelectorAll('.char');
@@ -147,6 +157,16 @@ function addAndAnimateNewWord(newWordElement) {
                 ease: 'power3.out'
             }
         );
+    });
+    
+    // Animate the word container to clear blur and scale up
+    gsap.to(newWordElement, {
+        filter: 'blur(0px)',
+        scale: 1,
+        opacity: 1,
+        duration: 1.2,
+        delay: 0.3,
+        ease: 'power2.out'
     });
 }
 
@@ -242,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
         y: 30,
         opacity: 0,
         ease: 'power2.out'
-    }, '+=0.5'); // Appear 3 seconds earlier (changed from 2.5s to 0.5s)
+    }, '+=0.1'); // Appear 3 seconds earlier (changed from 2.5s to 0.5s)
 
     // ========================================
     // SCROLL-TRIGGERED SECTION HEADINGS
