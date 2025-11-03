@@ -236,14 +236,13 @@ document.addEventListener('DOMContentLoaded', () => {
         animateWord(); // Continue with next word
     }, 4000); // After first word animation completes
 
-    // Tagline appears earlier - while word is still animating
-    // For a word with ~10 letters: middle letters appear around 1.5-2s
+    // Tagline appears much earlier - right after first few letters
     heroTimeline.from('.hero-tagline', {
         duration: 1,
         y: 30,
         opacity: 0,
         ease: 'power2.out'
-    }, '+=2.5'); // Appear earlier, while word animation is in progress
+    }, '+=0.5'); // Appear 3 seconds earlier (changed from 2.5s to 0.5s)
 
     // ========================================
     // SCROLL-TRIGGERED SECTION HEADINGS
