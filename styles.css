@@ -74,28 +74,45 @@ section[class*="bg-[#1"] .text-outlined {
     -webkit-text-stroke: 1.5px #ffffff;
 }
 
-/* Load Momo Trust Display Font */
+/* Load BebasNeue Font */
 @font-face {
-    font-family: 'Momo Trust Display';
-    src: url('./fonts/MomoTrustDisplay-Regular.ttf') format('truetype');
+    font-family: 'BebasNeue';
+    src: url('./fonts/BebasNeue-Regular.ttf') format('truetype');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
 }
 
-/* Use Momo Trust Display for paragraphs and footer text only (regular weight) */
+/* Load Oswald Fonts */
+@font-face {
+    font-family: 'Oswald';
+    src: url('./fonts/Oswald-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Oswald';
+    src: url('./fonts/Oswald-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Use Oswald for paragraphs and footer text (Light for regular, SemiBold for headings) */
 p,
 footer p,
 footer a,
 footer li,
 footer small,
 footer span:not(.fa):not(.fas):not(.far):not(.fab) {
-    font-family: 'Momo Trust Display', 'Archivo', sans-serif !important;
-    font-weight: 400 !important;
+    font-family: 'Oswald', 'Archivo', sans-serif !important;
+    font-weight: 300 !important; /* Oswald Light */
 }
 
 .hero-typewriter {
-    font-family: 'Momo Trust Display', 'Unbounded', sans-serif;
+    font-family: 'BebasNeue', 'Unbounded', sans-serif;
     letter-spacing: -0.02em;
     position: relative;
     min-height: 1.3em;
@@ -458,8 +475,8 @@ a:focus-visible {
 
 .footer-heading {
     font-size: 2rem; /* increased 100% */
-    font-family: 'Momo Trust Display', 'Archivo', sans-serif;
-    font-weight: 600;
+    font-family: 'Oswald', 'Archivo', sans-serif;
+    font-weight: 600; /* Oswald SemiBold */
     color: #ffffff;
     margin-bottom: 12px;
     text-transform: none;
