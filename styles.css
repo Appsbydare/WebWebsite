@@ -35,15 +35,26 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Prevent text from breaking on CTA heading */
-#stats + section h2:last-of-type .split-target,
-section:has(.glass-btn) h2:last-of-type .split-target {
+.cta-last-line {
     white-space: nowrap;
     display: inline-block;
 }
 
+.cta-last-line .split-char,
+.cta-last-line .split-word {
+    display: inline-block;
+}
+
+@media (max-width: 1024px) {
+    .cta-last-line {
+        font-size: 2.5rem !important;
+    }
+}
+
 @media (max-width: 768px) {
-    section:has(.glass-btn) h2:last-of-type .split-target {
+    .cta-last-line {
         white-space: normal;
+        font-size: 2rem !important;
     }
 }
 
