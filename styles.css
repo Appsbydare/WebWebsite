@@ -120,25 +120,28 @@ footer span:not(.fa):not(.fas):not(.far):not(.fab) {
     justify-content: center;
     align-items: center;
     width: 100%;
-    /* Increased by 200% (3x original size) */
-    font-size: 11.25rem !important; /* 3x text-6xl (3.75rem) */
+    /* Reduced from 3x to 2x (200% increase from original) */
+    font-size: 7.5rem !important; /* 2x text-6xl (3.75rem) */
+    box-shadow: none !important;
+    background: transparent !important;
+    border: none !important;
 }
 
 @media (min-width: 640px) {
     .hero-typewriter {
-        font-size: 13.5rem !important; /* 3x text-7xl (4.5rem) */
+        font-size: 9rem !important; /* 2x text-7xl (4.5rem) */
     }
 }
 
 @media (min-width: 768px) {
     .hero-typewriter {
-        font-size: 18rem !important; /* 3x text-8xl (6rem) */
+        font-size: 12rem !important; /* 2x text-8xl (6rem) */
     }
 }
 
 @media (min-width: 1024px) {
     .hero-typewriter {
-        font-size: 24rem !important; /* 3x text-9xl (8rem) */
+        font-size: 16rem !important; /* 2x text-9xl (8rem) */
     }
 }
 
