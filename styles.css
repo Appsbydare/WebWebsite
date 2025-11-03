@@ -34,6 +34,13 @@ h1, h2, h3, h4, h5, h6 {
     paint-order: stroke fill;
 }
 
+/* White fill with black stroke (for CTA heading) */
+.text-filled-outline-black {
+    color: #ffffff;
+    -webkit-text-stroke: 1.5px #111213;
+    paint-order: stroke fill;
+}
+
 /* Outlined text on dark backgrounds */
 section[class*="bg-[#0"] .text-outlined,
 section[class*="bg-[#1"] .text-outlined {
@@ -351,5 +358,21 @@ a:focus-visible {
 
 .box-card:hover {
     box-shadow: 0 8px 12px rgba(30, 58, 138, 0.4), 0 4px 8px rgba(30, 58, 138, 0.3);
+}
+
+/* Glass button style for CTA */
+.glass-btn {
+    background: rgba(10, 10, 10, 0.6) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    border-radius: 9999px !important; /* fully rounded */
+    padding: 0.75rem 1.5rem !important; /* ~py-3 px-6 */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+.glass-btn:hover {
+    background: rgba(15, 15, 15, 0.7) !important;
 }
 
