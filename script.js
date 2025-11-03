@@ -207,7 +207,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const windowWidth = window.innerWidth;
     const startDistance = windowWidth * 0.5;
     
-    // Set initial state for first word characters
+    // Set initial state for first word characters and container
+    gsap.set(firstWordElement, {
+        filter: 'blur(20px)',
+        scale: 0.8,
+        opacity: 0
+    });
+    
     firstWordChars.forEach((char, index) => {
         const fromLeft = index < midPoint;
         gsap.set(char, {
@@ -249,12 +255,22 @@ document.addEventListener('DOMContentLoaded', () => {
             ease: 'power3.out'
         }, 0); // Start at the same time as headers
     });
+    
+    // Animate first word container to clear blur and scale up
+    heroTimeline.to(firstWordElement, {
+        filter: 'blur(0px)',
+        scale: 1,
+        opacity: 1,
+        duration: 1.2,
+        delay: 0.3,
+        ease: 'power2.out'
+    }, 0.3); // Start after characters begin animating
 
-    // Schedule next word after first completes
+    // Schedule next word after first completes (increased display time)
     wordIndex = 1;
     setTimeout(() => {
         animateWord(); // Continue with next word
-    }, 4000); // After first word animation completes
+    }, 7000); // Increased from 4s to 7s for longer display time
 
     // Tagline appears much earlier - right after first few letters
     heroTimeline.from('.hero-tagline', {
