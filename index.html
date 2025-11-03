@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEBAGENCY - Transform Your Digital Presence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="font-sans antialiased">
+    
+    <!-- NAVIGATION -->
+    <nav class="fixed top-0 left-0 right-0 bg-white border-b-4 border-black z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="text-3xl font-black uppercase">WEBAGENCY</div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#services" class="uppercase font-bold hover:text-blue-600 transition">Services</a>
+                    <a href="#cases" class="uppercase font-bold hover:text-blue-600 transition">Cases</a>
+                    <a href="#process" class="uppercase font-bold hover:text-blue-600 transition">Process</a>
+                    <a href="#testimonials" class="uppercase font-bold hover:text-blue-600 transition">Testimonials</a>
+                    <button class="bg-black text-white px-6 py-3 font-bold uppercase border-4 border-black hover:bg-white hover:text-black transition">
+                        GET STARTED
+                    </button>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden text-3xl font-black">
+                    ☰
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t-4 border-black bg-white">
+            <div class="px-4 py-6 space-y-4">
+                <a href="#services" class="block uppercase font-bold hover:text-blue-600">Services</a>
+                <a href="#cases" class="block uppercase font-bold hover:text-blue-600">Cases</a>
+                <a href="#process" class="block uppercase font-bold hover:text-blue-600">Process</a>
+                <a href="#testimonials" class="block uppercase font-bold hover:text-blue-600">Testimonials</a>
+                <button class="w-full bg-black text-white px-6 py-3 font-bold uppercase border-4 border-black">
+                    GET STARTED
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="bg-white pt-32 pb-20 px-4">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="leading-none mb-4">
+                <div class="text-outlined text-6xl sm:text-8xl md:text-9xl lg:text-[12rem] xl:text-[18rem] font-black uppercase">
+                    TRANSFORM YOUR
+                </div>
+                <div class="text-6xl sm:text-8xl md:text-9xl lg:text-[12rem] xl:text-[18rem] font-black uppercase">
+                    BUSINESS WITH
+                </div>
+                <div id="typewriter" class="text-6xl sm:text-8xl md:text-9xl lg:text-[12rem] xl:text-[18rem] font-black uppercase text-blue-600">
+                    INNOVATION
+                </div>
+            </h1>
+            
+            <p class="text-2xl sm:text-3xl md:text-4xl font-bold uppercase mt-12 mb-12 max-w-4xl mx-auto">
+                WE CREATE BOLD DIGITAL EXPERIENCES THAT DRIVE REAL RESULTS FOR YOUR BRAND
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <button class="bg-black text-white px-12 py-6 text-2xl font-bold uppercase border-4 border-black hover:bg-white hover:text-black transition transform hover:scale-105">
+                    START YOUR PROJECT
+                </button>
+                <button class="bg-white text-black px-12 py-6 text-2xl font-bold uppercase border-4 border-black hover:bg-black hover:text-white transition transform hover:scale-105">
+                    VIEW OUR WORK
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS SECTION -->
+    <section class="bg-black text-white py-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="border-4 border-white p-8 text-center hover:bg-white hover:text-black transition transform hover:scale-105">
+                    <div class="text-8xl mb-4">🚀</div>
+                    <div class="text-7xl font-black mb-2">500+</div>
+                    <div class="text-xl font-bold uppercase">PROJECTS LAUNCHED</div>
+                </div>
+                <div class="border-4 border-white p-8 text-center hover:bg-white hover:text-black transition transform hover:scale-105">
+                    <div class="text-8xl mb-4">😍</div>
+                    <div class="text-7xl font-black mb-2">98%</div>
+                    <div class="text-xl font-bold uppercase">CLIENT SATISFACTION</div>
+                </div>
+                <div class="border-4 border-white p-8 text-center hover:bg-white hover:text-black transition transform hover:scale-105">
+                    <div class="text-8xl mb-4">💰</div>
+                    <div class="text-7xl font-black mb-2">$50M+</div>
+                    <div class="text-xl font-bold uppercase">REVENUE GENERATED</div>
+                </div>
+                <div class="border-4 border-white p-8 text-center hover:bg-white hover:text-black transition transform hover:scale-105">
+                    <div class="text-8xl mb-4">⚡</div>
+                    <div class="text-7xl font-black mb-2">24/7</div>
+                    <div class="text-xl font-bold uppercase">SUPPORT AVAILABLE</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES SECTION -->
+    <section id="services" class="bg-white py-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-center mb-16">
+                <span class="text-outlined text-5xl sm:text-6xl md:text-7xl font-black uppercase">OUR</span>
+                <span class="text-5xl sm:text-6xl md:text-7xl font-black uppercase"> SERVICES</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="border-4 border-black p-10 hover:bg-black hover:text-white transition transform hover:scale-105">
+                    <div class="text-8xl mb-4">🎨</div>
+                    <h3 class="text-3xl font-black uppercase mb-4">WEB DESIGN</h3>
+                    <p class="text-lg">CREATE STUNNING, USER-CENTRIC WEBSITES THAT CAPTIVATE YOUR AUDIENCE AND DRIVE CONVERSIONS.</p>
+                </div>
+                <div class="border-4 border-black p-10 hover:bg-black hover:text-white transition transform hover:scale-105">
+                    <div class="text-8xl mb-4">💻</div>
+                    <h3 class="text-3xl font-black uppercase mb-4">DEVELOPMENT</h3>
+                    <p class="text-lg">BUILD ROBUST, SCALABLE WEB APPLICATIONS WITH CUTTING-EDGE TECHNOLOGY AND BEST PRACTICES.</p>
+                </div>
+                <div class="border-4 border-black p-10 hover:bg-black hover:text-white transition transform hover:scale-105">
+                    <div class="text-8xl mb-4">📱</div>
+                    <h3 class="text-3xl font-black uppercase mb-4">MOBILE APPS</h3>
+                    <p class="text-lg">DEVELOP NATIVE AND CROSS-PLATFORM MOBILE APPLICATIONS THAT ENGAGE USERS ON THE GO.</p>
+                </div>
+                <div class="border-4 border-black p-10 hover:bg-black hover:text-white transition transform hover:scale-105">
+                    <div class="text-8xl mb-4">📈</div>
+                    <h3 class="text-3xl font-black uppercase mb-4">DIGITAL MARKETING</h3>
+                    <p class="text-lg">AMPLIFY YOUR BRAND WITH DATA-DRIVEN STRATEGIES THAT MAXIMIZE ROI AND MARKET REACH.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CASE STUDIES SECTION -->
+    <section id="cases" class="bg-black text-white py-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-center mb-16">
+                <span class="text-5xl sm:text-6xl md:text-7xl font-black uppercase">SUCCESS STORIES</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="border-4 border-white p-10 hover:bg-white hover:text-black transition transform hover:scale-105">
+                    <div class="text-9xl mb-6">🏆</div>
+                    <h3 class="text-2xl font-black uppercase mb-4">E-COMMERCE GIANT</h3>
+                    <p class="text-lg mb-6">TRANSFORMED THEIR ONLINE PRESENCE WITH A MODERN, CONVERSION-OPTIMIZED PLATFORM.</p>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span>✓</span>
+                            <span>350% INCREASE IN SALES</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span>✓</span>
+                            <span>2X FASTER LOAD TIMES</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span>✓</span>
+                            <span>95% MOBILE SATISFACTION</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-4 border-white p-10 hover:bg-white hover:text-black transition transform hover:scale-105">
+                    <div class="text-9xl mb-6">🎯</div>
+                    <h3 class="text-2xl font-black uppercase mb-4">FINTECH STARTUP</h3>
+                    <p class="text-lg mb-6">BUILT A SECURE, SCALABLE PLATFORM THAT HANDLES MILLIONS IN TRANSACTIONS DAILY.</p>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span>✓</span>
+                            <span>$5M+ PROCESSED DAILY</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span>✓</span>
+                            <span>100K+ ACTIVE USERS</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span>✓</span>
+                            <span>ZERO SECURITY BREACHES</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-4 border-white p-10 hover:bg-white hover:text-black transition transform hover:scale-105">
+                    <div class="text-9xl mb-6">🌟</div>
+                    <h3 class="text-2xl font-black uppercase mb-4">HEALTH & WELLNESS</h3>
+                    <p class="text-lg mb-6">CREATED AN ENGAGING APP THAT HELPS USERS ACHIEVE THEIR FITNESS GOALS.</p>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span>✓</span>
+                            <span>500K+ DOWNLOADS</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span>✓</span>
+                            <span>4.8 STAR RATING</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span>✓</span>
+                            <span>85% RETENTION RATE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROCESS SECTION -->
+    <section id="process" class="bg-white py-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-center mb-16">
+                <span class="text-5xl sm:text-6xl md:text-7xl font-black uppercase">OUR PROCESS</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="border-4 border-black p-8 hover:bg-black hover:text-white transition transform hover:scale-105">
+                    <div class="text-8xl font-black mb-2">01</div>
+                    <div class="text-7xl mb-4">🔍</div>
+                    <h3 class="text-2xl font-black uppercase mb-2">DISCOVERY</h3>
+                    <p class="text-lg">WE DIVE DEEP INTO YOUR BUSINESS GOALS AND TARGET AUDIENCE.</p>
+                </div>
+                <div class="border-4 border-black p-8 hover:bg-black hover:text-white transition transform hover:scale-105">
+                    <div class="text-8xl font-black mb-2">02</div>
+                    <div class="text-7xl mb-4">💡</div>
+                    <h3 class="text-2xl font-black uppercase mb-2">STRATEGY</h3>
+                    <p class="text-lg">CRAFT A COMPREHENSIVE PLAN TAILORED TO YOUR UNIQUE NEEDS.</p>
+                </div>
+                <div class="border-4 border-black p-8 hover:bg-black hover:text-white transition transform hover:scale-105">
+                    <div class="text-8xl font-black mb-2">03</div>
+                    <div class="text-7xl mb-4">✏️</div>
+                    <h3 class="text-2xl font-black uppercase mb-2">DESIGN</h3>
+                    <p class="text-lg">CREATE STUNNING VISUALS THAT ALIGN WITH YOUR BRAND IDENTITY.</p>
+                </div>
+                <div class="border-4 border-black p-8 hover:bg-black hover:text-white transition transform hover:scale-105">
+                    <div class="text-8xl font-black mb-2">04</div>
+                    <div class="text-7xl mb-4">⚙️</div>
+                    <h3 class="text-2xl font-black uppercase mb-2">DEVELOPMENT</h3>
+                    <p class="text-lg">BUILD YOUR SOLUTION WITH CLEAN CODE AND BEST PRACTICES.</p>
+                </div>
+                <div class="border-4 border-black p-8 hover:bg-black hover:text-white transition transform hover:scale-105">
+                    <div class="text-8xl font-black mb-2">05</div>
+                    <div class="text-7xl mb-4">🧪</div>
+                    <h3 class="text-2xl font-black uppercase mb-2">TESTING</h3>
+                    <p class="text-lg">RIGOROUSLY TEST EVERY FEATURE TO ENSURE PERFECTION.</p>
+                </div>
+                <div class="border-4 border-black p-8 hover:bg-black hover:text-white transition transform hover:scale-105">
+                    <div class="text-8xl font-black mb-2">06</div>
+                    <div class="text-7xl mb-4">🚀</div>
+                    <h3 class="text-2xl font-black uppercase mb-2">LAUNCH</h3>
+                    <p class="text-lg">DEPLOY YOUR PROJECT AND WATCH YOUR BUSINESS SOAR.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section id="testimonials" class="bg-black text-white py-20 px-4">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-center mb-16">
+                <span class="text-5xl sm:text-6xl md:text-7xl font-black uppercase">WHAT CLIENTS SAY</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="border-4 border-white p-10">
+                    <div class="text-8xl mb-6">👨‍💼</div>
+                    <p class="text-2xl mb-6 italic">"WEBAGENCY TRANSFORMED OUR DIGITAL PRESENCE COMPLETELY. THE ROI WAS IMMEDIATE AND SUBSTANTIAL."</p>
+                    <div class="font-bold uppercase">- JOHN SMITH</div>
+                    <div class="text-sm uppercase">CEO, TECHCORP</div>
+                </div>
+                <div class="border-4 border-white p-10">
+                    <div class="text-8xl mb-6">👩‍💼</div>
+                    <p class="text-2xl mb-6 italic">"THE TEAM'S ATTENTION TO DETAIL AND COMMITMENT TO EXCELLENCE IS UNMATCHED. HIGHLY RECOMMEND!"</p>
+                    <div class="font-bold uppercase">- SARAH JOHNSON</div>
+                    <div class="text-sm uppercase">FOUNDER, STARTUPX</div>
+                </div>
+                <div class="border-4 border-white p-10">
+                    <div class="text-8xl mb-6">🧑‍💻</div>
+                    <p class="text-2xl mb-6 italic">"WORKING WITH WEBAGENCY WAS A GAME-CHANGER. THEY DELIVERED BEYOND OUR EXPECTATIONS."</p>
+                    <div class="font-bold uppercase">- MIKE CHEN</div>
+                    <div class="text-sm uppercase">CTO, INNOVATE INC</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA SECTION -->
+    <section class="bg-white py-32 px-4">
+        <div class="max-w-5xl mx-auto text-center">
+            <h2 class="leading-tight mb-12">
+                <div class="text-outlined text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase mb-2">
+                    READY TO TRANSFORM
+                </div>
+                <div class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase">
+                    YOUR DIGITAL PRESENCE?
+                </div>
+            </h2>
+            
+            <button class="bg-black text-white px-16 py-8 text-3xl font-bold uppercase border-4 border-black hover:bg-white hover:text-black transition transform hover:scale-105">
+                LET'S TALK
+            </button>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-white py-16 px-4 border-t-4 border-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <h3 class="text-2xl font-black uppercase mb-4">COMPANY</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-blue-500 transition uppercase font-bold">About Us</a></li>
+                        <li><a href="#" class="hover:text-blue-500 transition uppercase font-bold">Careers</a></li>
+                        <li><a href="#" class="hover:text-blue-500 transition uppercase font-bold">Contact</a></li>
+                        <li><a href="#" class="hover:text-blue-500 transition uppercase font-bold">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-black uppercase mb-4">SERVICES</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-blue-500 transition uppercase font-bold">Web Design</a></li>
+                        <li><a href="#" class="hover:text-blue-500 transition uppercase font-bold">Development</a></li>
+                        <li><a href="#" class="hover:text-blue-500 transition uppercase font-bold">Mobile Apps</a></li>
+                        <li><a href="#" class="hover:text-blue-500 transition uppercase font-bold">Marketing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-black uppercase mb-4">RESOURCES</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-blue-500 transition uppercase font-bold">Case Studies</a></li>
+                        <li><a href="#" class="hover:text-blue-500 transition uppercase font-bold">Portfolio</a></li>
+                        <li><a href="#" class="hover:text-blue-500 transition uppercase font-bold">Testimonials</a></li>
+                        <li><a href="#" class="hover:text-blue-500 transition uppercase font-bold">FAQ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-black uppercase mb-4">CONNECT</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-blue-500 transition uppercase font-bold">Twitter</a></li>
+                        <li><a href="#" class="hover:text-blue-500 transition uppercase font-bold">LinkedIn</a></li>
+                        <li><a href="#" class="hover:text-blue-500 transition uppercase font-bold">Instagram</a></li>
+                        <li><a href="#" class="hover:text-blue-500 transition uppercase font-bold">Facebook</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t-4 border-white pt-8 text-center">
+                <p class="font-bold uppercase">© 2025 WEBAGENCY. ALL RIGHTS RESERVED.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

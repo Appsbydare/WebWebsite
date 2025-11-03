@@ -1,0 +1,70 @@
+/* Custom Styles for WebAgency */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow-x: hidden;
+}
+
+/* Outlined Text Effect */
+.text-outlined {
+    color: transparent;
+    -webkit-text-stroke: 4px black;
+    text-stroke: 4px black;
+    paint-order: stroke fill;
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Remove default button styles */
+button {
+    cursor: pointer;
+    outline: none;
+}
+
+/* Prevent text selection on buttons during interaction */
+button:active {
+    transform: scale(0.98);
+}
+
+/* Typewriter cursor effect */
+#typewriter::after {
+    content: '|';
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+/* Ensure borders are crisp */
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Mobile menu transition */
+#mobile-menu {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover scale effects */
+.hover\:scale-105:hover {
+    transform: scale(1.05);
+}
+
+/* Print styles (if needed) */
+@media print {
+    nav, footer {
+        display: none;
+    }
+}
+
