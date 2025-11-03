@@ -215,18 +215,18 @@ buttons.forEach(button => {
 });
 
 // ============================================
-// PARALLAX EFFECT FOR EMOJIS
+// PARALLAX EFFECT FOR ICONS
 // ============================================
 
-gsap.utils.toArray('.text-8xl, .text-9xl').forEach((emoji) => {
-    gsap.to(emoji, {
+gsap.utils.toArray('.fas, .far, .fab').forEach((icon) => {
+    gsap.to(icon, {
         scrollTrigger: {
-            trigger: emoji,
+            trigger: icon,
             start: 'top bottom',
             end: 'bottom top',
             scrub: 1
         },
-        y: -50,
+        y: -30,
         ease: 'none'
     });
 });

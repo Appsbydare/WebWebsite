@@ -104,15 +104,16 @@ a, button, .grid > div {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Enhanced emoji animations */
-.text-8xl, .text-9xl {
+/* Enhanced icon animations */
+.fas, .far, .fab {
     display: inline-block;
     transition: transform 0.3s ease;
 }
 
-.grid > div:hover .text-8xl,
-.grid > div:hover .text-9xl {
-    transform: scale(1.1) rotate(5deg);
+.grid > div:hover .fas,
+.grid > div:hover .far,
+.grid > div:hover .fab {
+    transform: scale(1.15) rotate(5deg);
 }
 
 /* Loading Animation */
