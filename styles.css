@@ -311,6 +311,17 @@ footer span:not(.fa):not(.fas):not(.far):not(.fab) {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* CTA Button - Glow Effect like Product Cards */
+.cta-button {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+    box-shadow: 0 0 40px rgba(59, 130, 246, 0.6), 0 0 80px rgba(139, 92, 246, 0.5), 0 0 120px rgba(236, 72, 153, 0.4), 0 10px 40px rgba(59, 130, 246, 0.3) !important;
+    transform: scale(1.05);
+}
+
 .split-target {
     display: inline-block;
 }
