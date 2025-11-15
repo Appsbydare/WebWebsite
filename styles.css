@@ -242,6 +242,14 @@ footer span:not(.fa):not(.fas):not(.far):not(.fab) {
     color: #0f1419;
 }
 
+/* Icon alignment fix for Stats section */
+#stats .product-card .fas {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1;
+    text-align: center;
+}
+
 /* Product Cards - No Border, Glow Effect on Hover */
 .product-card {
     border: none !important;
