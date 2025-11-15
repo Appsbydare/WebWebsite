@@ -378,6 +378,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Product Option Cards
+    const productCards = gsap.utils.toArray('#product-options .grid > div');
+    if (productCards.length) {
+        gsap.set(productCards, { y: 80, opacity: 0 });
+        gsap.to(productCards, {
+            scrollTrigger: {
+                trigger: '#product-options',
+                start: 'top 70%',
+                toggleActions: 'play none none reverse'
+            },
+            duration: 1,
+            y: 0,
+            opacity: 1,
+            stagger: 0.2,
+            ease: 'power3.out'
+        });
+    }
+
     // Service Cards
     const serviceCards = gsap.utils.toArray('#services .grid > div');
     if (serviceCards.length) {
