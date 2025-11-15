@@ -311,6 +311,14 @@ footer span:not(.fa):not(.fas):not(.far):not(.fab) {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* Ensure checkmark icons stay aligned during animations */
+#product-options .fas.fa-check {
+    display: inline-block;
+    text-align: center;
+    vertical-align: top;
+    will-change: auto;
+}
+
 /* CTA Button - Glow Effect like Product Cards */
 .cta-button {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
