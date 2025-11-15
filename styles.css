@@ -69,13 +69,28 @@ section[class*="bg-[#1"] .text-outlined {
     -webkit-text-stroke: 1.5px #ffffff;
 }
 
-/* Specifically for Why Choose section */
+/* Specifically for Why Choose section - now light mode */
 #stats .text-outlined {
-    -webkit-text-stroke: 1.5px #ffffff;
+    -webkit-text-stroke: 1.5px #1a1d24;
 }
 
 /* Product Options section - dark mode outlined text */
 #product-options .text-outlined {
+    -webkit-text-stroke: 1.5px #ffffff;
+}
+
+/* Services section - dark mode outlined text */
+#services .text-outlined {
+    -webkit-text-stroke: 1.5px #ffffff;
+}
+
+/* Process section - dark mode outlined text */
+#process .text-outlined {
+    -webkit-text-stroke: 1.5px #ffffff;
+}
+
+/* Final CTA section - dark mode outlined text */
+section:has(.cta-last-line) .text-outlined {
     -webkit-text-stroke: 1.5px #ffffff;
 }
 
