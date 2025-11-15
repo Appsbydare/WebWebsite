@@ -302,6 +302,14 @@ footer span:not(.fa):not(.fas):not(.far):not(.fab) {
     box-shadow: 0 0 30px rgba(6, 182, 212, 0.6), 0 0 60px rgba(6, 182, 212, 0.4), 0 10px 40px rgba(6, 182, 212, 0.3) !important;
 }
 
+/* Service Badge - Large Timing Display */
+.service-badge {
+    white-space: nowrap;
+    line-height: 1;
+    letter-spacing: 0.05em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
 .split-target {
     display: inline-block;
 }
