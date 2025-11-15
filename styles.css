@@ -241,6 +241,40 @@ footer span:not(.fa):not(.fas):not(.far):not(.fab) {
     color: #0f1419;
 }
 
+/* Product Cards - No Border, Glow Effect on Hover */
+.product-card {
+    border: none !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s ease;
+}
+
+/* Blue Card Glow */
+.product-card-blue {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.product-card-blue:hover {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.6), 0 0 60px rgba(59, 130, 246, 0.4), 0 10px 40px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Purple Card Glow */
+.product-card-purple {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.product-card-purple:hover {
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.6), 0 0 60px rgba(139, 92, 246, 0.4), 0 10px 40px rgba(139, 92, 246, 0.3) !important;
+}
+
+/* Pink Card Glow */
+.product-card-pink {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.product-card-pink:hover {
+    box-shadow: 0 0 30px rgba(236, 72, 153, 0.6), 0 0 60px rgba(236, 72, 153, 0.4), 0 10px 40px rgba(236, 72, 153, 0.3) !important;
+}
+
 .split-target {
     display: inline-block;
 }
