@@ -74,6 +74,11 @@ section[class*="bg-[#1"] .text-outlined {
     -webkit-text-stroke: 1.5px #ffffff;
 }
 
+/* Product Options section - dark mode outlined text */
+#product-options .text-outlined {
+    -webkit-text-stroke: 1.5px #ffffff;
+}
+
 /* Load BebasNeue Font */
 @font-face {
     font-family: 'BebasNeue';
@@ -175,6 +180,20 @@ footer span:not(.fa):not(.fas):not(.far):not(.fab) {
 #typewriter,
 #typewriter * {
     font-family: 'BebasNeue', 'Unbounded', sans-serif !important;
+}
+
+/* Service Title - Elegant BebasNeue Font */
+.service-title {
+    font-family: 'BebasNeue', 'Archivo Black', sans-serif !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: white;
+    line-height: 1.2;
+}
+
+#product-options .group:hover .service-title {
+    color: #0f1419;
 }
 
 .split-target {
@@ -462,6 +481,16 @@ a:focus-visible {
 
 .box-card:hover {
     box-shadow: 0 8px 12px rgba(0, 1, 56, 0.4), 0 4px 8px rgba(0, 1, 56, 0.3);
+}
+
+/* Product Options Cards - Dark Mode Styling */
+#product-options .box-card {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#product-options .box-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 /* Glass button style for CTA */
