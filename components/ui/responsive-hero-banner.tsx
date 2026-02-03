@@ -189,7 +189,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                     />
                 </div>
 
-                {/* Dot Grid Background - Fixed and White (Inverts to Black in Hero) */}
+                {/* Dot Grid Fixed - White dots (become black when inverted in hero, white in services) */}
                 <div className="fixed inset-0 z-0 opacity-20 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
 
                 {/* Hero Inversion Layer - Creates the White/Ink look ONLY for this section */}
