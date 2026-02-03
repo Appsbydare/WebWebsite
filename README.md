@@ -1,137 +1,36 @@
-# WEBAGENCY - Modern Landing Page
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-A stunning, text-based landing page for a web agency with professional GSAP animations and elegant effects.
+## Getting Started
 
-## 🎨 Features
+First, run the development server:
 
-### Design
-- **Bold Typography** - Massive text (up to 18rem/288px on desktop)
-- **Alternating Themes** - Black & White sections
-- **4px Borders** - Sharp, clean edges throughout
-- **Emoji Icons** - Large emojis (7xl-9xl) instead of images
-- **Text-Only** - Ultra-fast loading, no image dependencies
-
-### Animations (GSAP)
-- **Scroll-Triggered Animations** - Elements reveal as you scroll
-- **Magnetic Buttons** - Buttons follow your cursor
-- **Parallax Effects** - Subtle depth on emojis
-- **TypeWriter Animation** - Rotating hero text
-- **Stagger Effects** - Cards animate in sequence
-- **Smooth Entrance** - Navigation and hero fade in on load
-- **Hover Effects** - Scale, rotation, and color inversions
-
-### Technology Stack
-- HTML5 - Semantic structure
-- Tailwind CSS (CDN) - Utility-first styling
-- GSAP 3.12.5 - Professional animations
-- Vanilla JavaScript - Lightweight interactions
-- Zero Build Process - Works immediately
-
-## 🚀 Quick Start
-
-1. **Clone the repository**
 ```bash
-git clone https://github.com/Appsbydare/WebWebsite.git
-cd WebWebsite
-```
-
-2. **Open in browser**
-```bash
-# Just open index.html in any browser
-open index.html
+npm run dev
 # or
-start index.html
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-That's it! No build process needed.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## 📁 File Structure
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-```
-WebWebsite/
-├── index.html      # Main HTML structure
-├── styles.css      # Custom CSS (outlined text, animations)
-├── script.js       # GSAP animations & interactions
-├── Scope.txt       # Original project scope
-└── README.md       # This file
-```
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## 🎯 Sections
+## Learn More
 
-1. **Navigation** - Fixed header with mobile menu
-2. **Hero** - Massive animated text with TypeWriter effect
-3. **Stats** - 4 metric cards with icons
-4. **Services** - 4 service offerings
-5. **Case Studies** - 3 success stories
-6. **Process** - 6-step workflow
-7. **Testimonials** - 3 client reviews
-8. **Final CTA** - Large call-to-action
-9. **Footer** - Links organized by category
+To learn more about Next.js, take a look at the following resources:
 
-## 🎭 Animation Details
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-### On Page Load
-- Navigation slides down
-- Hero text scales up with elastic bounce
-- Buttons fade in with stagger
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-### On Scroll
-- Cards slide up and fade in
-- Headings reveal from bottom
-- Emojis have parallax movement
-- Testimonials slide in from sides
+## Deploy on Vercel
 
-### On Hover
-- Buttons have magnetic effect
-- Cards scale and lift
-- Emojis rotate slightly
-- Ripple effects on click
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-## 🌐 Live Demo
-
-Once deployed to GitHub Pages:
-https://appsbydare.github.io/WebWebsite/
-
-## 📱 Responsive Design
-
-- **Mobile** - Optimized for 320px+
-- **Tablet** - 768px+ breakpoints
-- **Desktop** - Full experience at 1024px+
-- **Large Screens** - Scales up to 18rem text
-
-## 🎨 Customization
-
-### Change Colors
-Edit Tailwind classes in `index.html`:
-- `bg-black` → Background color
-- `text-white` → Text color
-- `border-black` → Border color
-
-### Adjust Animations
-Edit `script.js`:
-- Change durations (0.8, 1.0, etc.)
-- Modify easing functions (power3.out, back.out, etc.)
-- Adjust stagger timing
-
-### Modify Text
-Update content directly in `index.html` - all text is editable.
-
-## 🔧 Browser Support
-
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
-- Mobile browsers (iOS Safari, Chrome)
-
-## 📄 License
-
-Free to use for your projects.
-
-## 🤝 Contributing
-
-Feel free to fork and enhance!
-
----
-
-Built with modern web technologies for maximum performance and visual impact.
-
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
