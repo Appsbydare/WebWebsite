@@ -118,8 +118,8 @@ export default function ServicesSection({ targetColors }: ServicesSectionProps) 
     }, []);
 
     return (
-        <section id="services" className="relative w-full min-h-screen py-24 px-6 z-10 bg-transparent text-white mix-blend-normal">
-            <div className="max-w-7xl mx-auto">
+        <section id="services" className="relative w-full min-h-screen py-24 px-6 z-10 bg-transparent text-white mix-blend-normal pointer-events-none">
+            <div className="max-w-7xl mx-auto pointer-events-auto">
                 {/* Section Header */}
                 <div className="mb-20 flex flex-col md:flex-row md:items-end justify-between gap-8">
                     <div className="max-w-2xl">
