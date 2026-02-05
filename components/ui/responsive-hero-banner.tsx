@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { cn } from "@/lib/utils";
 import { Menu, X, ArrowRight, Play, Sparkles } from 'lucide-react';
 import { TubesBackground } from "./neon-flow";
@@ -67,6 +67,8 @@ interface ResponsiveHeroBannerProps {
     showPartners?: boolean;
     neonOpacity?: number; // 0-1, controls neon background visibility
     overlayOpacity?: number; // 0-1, controls gradient overlay intensity
+    onColorsChange?: (colors: string[]) => void; // Callback to notify parent of color changes
+    rawColors?: string[]; // Raw neon trail colors for nav bar when in dark section
 }
 
 const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
@@ -92,13 +94,21 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
     partnersTitle = "Trusted by industry leaders",
     showPartners = false,
     neonOpacity = 0.6, // Slightly reduced for grid visibility
-    overlayOpacity = 0.5 // Stronger white fade to blend grid
+    overlayOpacity = 0.5, // Stronger white fade to blend grid
+    onColorsChange, // Callback to notify parent of color changes
+    rawColors = [] // Raw neon trail colors for nav bar when in dark section
 }) => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    // State to hold the current visible colors for the gradient
+    // State to hold the current visible colors for the gradient (inverted for hero section)
     const [currentGradientColors, setCurrentGradientColors] = useState<[string, string]>(["#3b82f6", "#8b5cf6"]);
     const [accentColor, setAccentColor] = useState<string>("#3b82f6");
+
+    // State to hold raw colors for nav bar when in dark section
+    const [rawGradientColors, setRawGradientColors] = useState<[string, string]>(["#3b82f6", "#8b5cf6"]);
+    const rawAnimRef = useRef<number | null>(null);
+    const rawStartColorsRef = useRef<[string, string]>(["#3b82f6", "#8b5cf6"]);
+    const rawTargetColorsRef = useRef<[string, string]>(["#3b82f6", "#8b5cf6"]);
 
     // Refs for animation
     const animRef = useRef<number | null>(null);
@@ -108,15 +118,57 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
     // Calculate the CSS gradient string based on current state
     const accentGradient = `linear-gradient(135deg, ${currentGradientColors[0]} 0%, ${currentGradientColors[1]} 100%)`;
 
+    // Update raw colors when prop changes (for nav bar in dark section)
+    useEffect(() => {
+        if (!rawColors || rawColors.length === 0) return;
+
+        const primary = rawColors[0];
+        const secondary = rawColors[1] || rawColors[0];
+
+        rawStartColorsRef.current = [...rawGradientColors];
+        rawTargetColorsRef.current = [primary, secondary];
+
+        const startTime = performance.now();
+        const duration = 1000; // Match the 1000ms in neon-flow
+
+        if (rawAnimRef.current) cancelAnimationFrame(rawAnimRef.current);
+
+        const animate = (time: number) => {
+            const elapsed = time - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // Ease out cubic
+            const ease = 1 - Math.pow(1 - progress, 3);
+
+            const c1 = lerpColor(rawStartColorsRef.current[0], rawTargetColorsRef.current[0], ease);
+            const c2 = lerpColor(rawStartColorsRef.current[1], rawTargetColorsRef.current[1], ease);
+
+            setRawGradientColors([c1, c2]);
+
+            if (progress < 1) {
+                rawAnimRef.current = requestAnimationFrame(animate);
+            }
+        };
+
+        rawAnimRef.current = requestAnimationFrame(animate);
+    }, [rawColors]);
+
     // Cleanup animation on unmount
     useEffect(() => {
         return () => {
             if (animRef.current) cancelAnimationFrame(animRef.current);
+            if (rawAnimRef.current) cancelAnimationFrame(rawAnimRef.current);
         };
     }, []);
 
     const handleColorChange = (colors: string[]) => {
         if (!colors || colors.length === 0) return;
+
+        // Notify parent of raw color changes (before inversion)
+        // Services section needs raw colors, hero section will invert them
+        if (onColorsChange) {
+            onColorsChange(colors);
+        }
 
         // INVERT the incoming colors so they match the visual state of the inverted canvas
         const invertedColors = colors.map(invertColor);
@@ -157,6 +209,17 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
     };
 
     const [scrolledPastHero, setScrolledPastHero] = useState(false);
+
+    // Nav bar gradient: use inverted colors when in hero section, raw colors when in dark section
+    const navGradient = useMemo(() => {
+        return scrolledPastHero 
+            ? `linear-gradient(135deg, ${rawGradientColors[0]} 0%, ${rawGradientColors[1]} 100%)`
+            : accentGradient;
+    }, [scrolledPastHero, rawGradientColors, accentGradient]);
+    
+    const navAccentColor = useMemo(() => {
+        return scrolledPastHero ? rawGradientColors[0] : accentColor;
+    }, [scrolledPastHero, rawGradientColors, accentColor]);
 
     // Scroll listener for adaptive nav
     useEffect(() => {
@@ -212,7 +275,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                         <a href="/" className="flex items-center gap-2 px-4 group">
                             <div
                                 className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md transition-all duration-500"
-                                style={{ background: accentGradient, boxShadow: `0 0 10px ${accentColor}40` }}
+                                style={{ background: navGradient, boxShadow: `0 0 10px ${navAccentColor}40` }}
                             >
                                 D
                             </div>
@@ -247,7 +310,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                             <a
                                 href={ctaButtonHref}
                                 className="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-all shadow-md hover:shadow-lg"
-                                style={{ background: accentGradient }}
+                                style={{ background: navGradient }}
                             >
                                 {ctaButtonText}
                                 <ArrowRight className="w-4 h-4" />
@@ -293,7 +356,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                             <a
                                 href={ctaButtonHref}
                                 className="mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-white font-bold"
-                                style={{ background: accentGradient }}
+                                style={{ background: navGradient }}
                                 onClick={() => setMobileMenuOpen(false)}
                             >
                                 {ctaButtonText}
