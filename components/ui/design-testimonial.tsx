@@ -154,7 +154,11 @@ export function Testimonial({ targetColors }: TestimonialProps) {
     const current = testimonials[activeIndex]
 
     return (
-        <div id="testimonial-section" className="relative w-full min-h-screen overflow-hidden">
+        <div
+            id="testimonial-section"
+            className="relative w-full min-h-screen overflow-hidden"
+            onClick={() => window.dispatchEvent(new Event("neon-trail-click"))}
+        >
             {/* Inversion Layer: 
             This layer flips the underlying black background to white, 
             and the neon tubes (if visible behind) to their inverted colors.
@@ -162,31 +166,34 @@ export function Testimonial({ targetColors }: TestimonialProps) {
         */}
             <div className="absolute inset-0 z-0 bg-white mix-blend-difference pointer-events-none"></div>
 
-            <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-black">
-                {/* Section Header - positioned at top left */}
-                <div className="absolute top-32 left-40 md:left-86">
-                    <div className="max-w-2xl">
-                        <TextBlockAnimation blockColor="#000000" delay={0.2}>
-                            <h2 className="text-sm font-bold tracking-widest uppercase mb-4" style={{ color: currentGradientColors[0], transition: 'color 1s' }}>
-                                What Clients Say
-                            </h2>
-                        </TextBlockAnimation>
+            <div className="relative z-10 flex flex-col items-center justify-center min-h-screen text-black pointer-events-none">
+                {/* Section Header - matches Services Section alignment */}
+                <div className="absolute top-32 left-0 w-full px-6 pointer-events-none">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="max-w-2xl">
+                            <TextBlockAnimation blockColor="#000000" delay={0.2}>
+                                <h2 className="text-sm font-bold tracking-widest uppercase mb-4" style={{ color: currentGradientColors[0], transition: 'color 1s' }}>
+                                    What Clients Say
+                                </h2>
+                            </TextBlockAnimation>
 
-                        <div className="overflow-hidden">
-                            <h3 className="text-4xl md:text-6xl font-display font-bold leading-none mb-6">
-                                Trusted by <br />
-                                <span
-                                    className="text-transparent bg-clip-text transition-all duration-1000"
-                                    style={{ backgroundImage: accentGradient }}
-                                >
-                                    Industry Leaders.
-                                </span>
-                            </h3>
+                            <div className="overflow-hidden">
+                                <h3 className="text-4xl md:text-6xl font-display font-bold leading-none mb-6">
+                                    Trusted by <br />
+                                    <span
+                                        className="text-transparent bg-clip-text transition-all duration-1000"
+                                        style={{ backgroundImage: accentGradient }}
+                                    >
+                                        Industry Leaders.
+                                    </span>
+                                </h3>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div ref={containerRef} className="relative w-full max-w-5xl px-6 mt-48" onMouseMove={handleMouseMove}>
+                {/* Content layer set to click-through so neon trail clicks work behind this section */}
+                <div ref={containerRef} className="relative w-full max-w-5xl px-6 mt-48 pointer-events-none">
 
                     {/* Oversized index number */}
                     <motion.div
@@ -325,67 +332,6 @@ export function Testimonial({ targetColors }: TestimonialProps) {
                                         </div>
                                     </motion.div>
                                 </AnimatePresence>
-
-                                {/* Navigation */}
-                                <div className="flex items-center gap-4">
-                                    <motion.button
-                                        onClick={goPrev}
-                                        className="group relative w-12 h-12 rounded-full border border-black/10 flex items-center justify-center overflow-hidden hover:border-transparent transition-colors"
-                                        whileTap={{ scale: 0.95 }}
-                                    >
-                                        <motion.div
-                                            className="absolute inset-0"
-                                            style={{ background: accentGradient }}
-                                            initial={{ x: "-100%" }}
-                                            whileHover={{ x: 0 }}
-                                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                                        />
-                                        <svg
-                                            width="18"
-                                            height="18"
-                                            viewBox="0 0 16 16"
-                                            fill="none"
-                                            className="relative z-10 text-black group-hover:text-white transition-colors"
-                                        >
-                                            <path
-                                                d="M10 12L6 8L10 4"
-                                                stroke="currentColor"
-                                                strokeWidth="1.5"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                            />
-                                        </svg>
-                                    </motion.button>
-
-                                    <motion.button
-                                        onClick={goNext}
-                                        className="group relative w-12 h-12 rounded-full border border-black/10 flex items-center justify-center overflow-hidden hover:border-transparent transition-colors"
-                                        whileTap={{ scale: 0.95 }}
-                                    >
-                                        <motion.div
-                                            className="absolute inset-0"
-                                            style={{ background: accentGradient }}
-                                            initial={{ x: "100%" }}
-                                            whileHover={{ x: 0 }}
-                                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                                        />
-                                        <svg
-                                            width="18"
-                                            height="18"
-                                            viewBox="0 0 16 16"
-                                            fill="none"
-                                            className="relative z-10 text-black group-hover:text-white transition-colors"
-                                        >
-                                            <path
-                                                d="M6 4L10 8L6 12"
-                                                stroke="currentColor"
-                                                strokeWidth="1.5"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                            />
-                                        </svg>
-                                    </motion.button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -404,6 +350,69 @@ export function Testimonial({ targetColors }: TestimonialProps) {
                             ))}
                         </motion.div>
                     </div>
+                </div>
+
+                {/* Navigation overlay (kept clickable while allowing background clicks to hit the neon canvas) */}
+                <div className="pointer-events-auto absolute bottom-12 right-10 flex items-center gap-4">
+                    <motion.button
+                        onClick={goPrev}
+                        className="group relative w-12 h-12 rounded-full border border-black/10 flex items-center justify-center overflow-hidden hover:border-transparent transition-colors bg-white/30 backdrop-blur-sm"
+                        whileTap={{ scale: 0.95 }}
+                        onClickCapture={(e) => e.stopPropagation()}
+                    >
+                        <motion.div
+                            className="absolute inset-0"
+                            style={{ background: accentGradient }}
+                            initial={{ x: "-100%" }}
+                            whileHover={{ x: 0 }}
+                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        />
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            className="relative z-10 text-black group-hover:text-white transition-colors"
+                        >
+                            <path
+                                d="M10 12L6 8L10 4"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                    </motion.button>
+
+                    <motion.button
+                        onClick={goNext}
+                        className="group relative w-12 h-12 rounded-full border border-black/10 flex items-center justify-center overflow-hidden hover:border-transparent transition-colors bg-white/30 backdrop-blur-sm"
+                        whileTap={{ scale: 0.95 }}
+                        onClickCapture={(e) => e.stopPropagation()}
+                    >
+                        <motion.div
+                            className="absolute inset-0"
+                            style={{ background: accentGradient }}
+                            initial={{ x: "100%" }}
+                            whileHover={{ x: 0 }}
+                            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        />
+                        <svg
+                            width="18"
+                            height="18"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                            className="relative z-10 text-black group-hover:text-white transition-colors"
+                        >
+                            <path
+                                d="M6 4L10 8L6 12"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            />
+                        </svg>
+                    </motion.button>
                 </div>
             </div>
         </div>

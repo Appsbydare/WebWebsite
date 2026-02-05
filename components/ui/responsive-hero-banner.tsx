@@ -218,11 +218,11 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
             // Testimonial section also uses inverted colors (white background with mix-blend-difference)
             return accentGradient;
         }
-        return scrolledPastHero 
+        return scrolledPastHero
             ? `linear-gradient(135deg, ${rawGradientColors[0]} 0%, ${rawGradientColors[1]} 100%)`
             : accentGradient;
     }, [scrolledPastHero, inTestimonialSection, rawGradientColors, accentGradient]);
-    
+
     const navAccentColor = useMemo(() => {
         if (inTestimonialSection) {
             return accentColor;
@@ -235,15 +235,17 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
         const handleScroll = () => {
             const threshold = window.innerHeight - 100;
             const testimonialSection = document.getElementById("testimonial-section");
-            
+
             let isInTestimonial = false;
             if (testimonialSection) {
                 const rect = testimonialSection.getBoundingClientRect();
-                // Check if testimonial section is visible in viewport
-                isInTestimonial = rect.top < window.innerHeight && rect.bottom > 0;
+                // Check if we've scrolled into the testimonial section
+                // The section is considered "active" when its top reaches the navbar area (approx 100px from top)
+                // This ensures the navbar adapts only when it physically overlaps the white testimonial section
+                isInTestimonial = rect.top < 100 && rect.bottom > 0;
                 setInTestimonialSection(isInTestimonial);
             }
-            
+
             // Only set scrolledPastHero if we're past hero AND not in testimonial section
             if (window.scrollY > threshold && !isInTestimonial) {
                 setScrolledPastHero(true);
@@ -332,7 +334,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                                         </g>
                                         <defs>
                                             <clipPath id="4292a66c9a">
-                                                <path d="M 225 196.050781 L 1175 196.050781 L 1175 1218 L 225 1218 Z M 225 196.050781 " clipRule="nonzero"/>
+                                                <path d="M 225 196.050781 L 1175 196.050781 L 1175 1218 L 225 1218 Z M 225 196.050781 " clipRule="nonzero" />
                                             </clipPath>
                                         </defs>
                                     </svg>

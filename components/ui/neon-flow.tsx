@@ -157,6 +157,16 @@ export function TubesBackground({
         animRef.current = requestAnimationFrame(animate);
     };
 
+    // Allow other sections to trigger a neon color change even if something overlays the canvas.
+    // Example: testimonial section can dispatch `window.dispatchEvent(new Event("neon-trail-click"))`.
+    useEffect(() => {
+        if (!enableClickInteraction) return;
+
+        const onExternalClick = () => handleClick();
+        window.addEventListener("neon-trail-click", onExternalClick);
+        return () => window.removeEventListener("neon-trail-click", onExternalClick);
+    }, [enableClickInteraction]);
+
     return (
         <div
             className={cn("relative w-full h-full min-h-[400px] overflow-hidden bg-background", className)}
