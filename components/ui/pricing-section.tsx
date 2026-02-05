@@ -1,0 +1,235 @@
+"use client";
+
+import React, { useState, useRef, useEffect } from 'react';
+import { Check, ArrowRight, Zap, Clock, MessageCircle } from 'lucide-react';
+import TextBlockAnimation from './text-block-animation';
+import { motion } from 'framer-motion';
+
+// Helper used for color interpolation
+const lerpColor = (start: string, end: string, t: number) => {
+    const s = parseInt(start.slice(1), 16);
+    const e = parseInt(end.slice(1), 16);
+
+    // Split channels
+    const sr = (s >> 16) & 255;
+    const sg = (s >> 8) & 255;
+    const sb = s & 255;
+
+    const er = (e >> 16) & 255;
+    const eg = (e >> 8) & 255;
+    const eb = e & 255;
+
+    // Interpolate
+    const r = Math.round(sr + (er - sr) * t);
+    const g = Math.round(sg + (eg - sg) * t);
+    const b = Math.round(sb + (eb - sb) * t);
+
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+};
+
+const plans = [
+    {
+        name: "1 Day",
+        subtitle: "Fast Track",
+        description: "Perfect for rapid landing pages or specific feature implementation.",
+        features: [
+            "2 High-Quality Pages",
+            "Responsive Design",
+            "Speed Optimization",
+            "Basic SEO Setup"
+        ],
+        icon: <Zap className="w-6 h-6" />,
+        color: "from-yellow-400 to-orange-500" // Gold/Orange
+    },
+    {
+        name: "3 Days",
+        subtitle: "Deep Dive",
+        description: "Comprehensive solution for standard websites and lightweight apps.",
+        features: [
+            "5-7 Custom Pages",
+            "Design System Setup",
+            "Advanced Animations",
+            "Content Integration",
+            "Analytics Setup"
+        ],
+        icon: <Clock className="w-6 h-6" />,
+        color: "from-cyan-400 to-blue-500" // Cyan/Blue
+    },
+    {
+        name: "Custom",
+        subtitle: "Inquiries",
+        description: "Tailored enterprise solutions for complex requirements.",
+        features: [
+            "Full-Scale Applications",
+            "E-commerce Systems",
+            "Custom Backend Logic",
+            "Third-party Integrations",
+            "Priority Support"
+        ],
+        icon: <MessageCircle className="w-6 h-6" />,
+        color: "from-emerald-400 to-green-500" // Emerald/Green
+    }
+];
+
+interface PricingSectionProps {
+    targetColors?: string[];
+}
+
+export default function PricingSection({ targetColors }: PricingSectionProps) {
+    // State for gradient colors - default to a gold/cyan mix for this section
+    const [currentGradientColors, setCurrentGradientColors] = useState<[string, string]>(["#fbbf24", "#22d3ee"]);
+
+    // Refs for animation
+    const animRef = useRef<number | null>(null);
+    const startColorsRef = useRef<[string, string]>(["#fbbf24", "#22d3ee"]);
+    const targetColorsRef = useRef<[string, string]>(["#fbbf24", "#22d3ee"]);
+
+    const accentGradient = `linear-gradient(135deg, ${currentGradientColors[0]} 0%, ${currentGradientColors[1]} 100%)`;
+
+    const handleColorChange = (colors: string[]) => {
+        if (!colors || colors.length === 0) return;
+
+        const primary = colors[0];
+        const secondary = colors[1] || colors[0];
+
+        startColorsRef.current = [...currentGradientColors];
+        targetColorsRef.current = [primary, secondary];
+
+        const startTime = performance.now();
+        const duration = 1000;
+
+        if (animRef.current) cancelAnimationFrame(animRef.current);
+
+        const animate = (time: number) => {
+            const elapsed = time - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const ease = 1 - Math.pow(1 - progress, 3);
+
+            const c1 = lerpColor(startColorsRef.current[0], targetColorsRef.current[0], ease);
+            const c2 = lerpColor(startColorsRef.current[1], targetColorsRef.current[1], ease);
+
+            setCurrentGradientColors([c1, c2]);
+
+            if (progress < 1) {
+                animRef.current = requestAnimationFrame(animate);
+            }
+        };
+
+        animRef.current = requestAnimationFrame(animate);
+    };
+
+    useEffect(() => {
+        if (targetColors && targetColors.length > 0) {
+            handleColorChange(targetColors);
+        }
+    }, [targetColors]);
+
+    useEffect(() => {
+        return () => {
+            if (animRef.current) cancelAnimationFrame(animRef.current);
+        };
+    }, []);
+
+    return (
+        <section id="pricing" className="relative w-full min-h-screen py-32 px-6 z-10 bg-transparent text-white mix-blend-normal pointer-events-none">
+            <div className="max-w-7xl mx-auto pointer-events-auto">
+                {/* Header */}
+                <div className="mb-24 flex flex-col items-center text-center">
+                    <TextBlockAnimation blockColor="#ffffff" delay={0.2}>
+                        <h2 className="text-sm font-bold tracking-widest uppercase mb-4" style={{ color: currentGradientColors[0], transition: 'color 1s' }}>
+                            Flexible Pricing
+                        </h2>
+                    </TextBlockAnimation>
+
+                    <h3 className="text-4xl md:text-6xl font-display font-bold leading-none mb-6">
+                        Build functionality <br />
+                        <span
+                            className="text-transparent bg-clip-text transition-all duration-1000"
+                            style={{ backgroundImage: accentGradient }}
+                        >
+                            Without the bloat.
+                        </span>
+                    </h3>
+                    <p className="text-xl text-white/60 max-w-2xl mt-4">
+                        Choose the perfect timeline for your project. From rapid prototypes to full-scale enterprise solutions.
+                    </p>
+                </div>
+
+                {/* Plans Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {plans.map((plan, index) => (
+                        <div
+                            key={index}
+                            className="group relative p-8 rounded-[2.5rem] bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:bg-white/10 hover:border-white/20 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] flex flex-col"
+                        >
+                            {/* Gradient Glow Effect on Hover */}
+                            <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none"
+                                style={{
+                                    background: `radial-gradient(circle at 50% 0%, ${currentGradientColors[0]}, transparent 70%)`
+                                }}
+                            />
+
+                            {/* Plan Header */}
+                            <div className="relative z-10 mb-8">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="p-3 rounded-2xl bg-white/5 border border-white/10">
+                                        <div
+                                            className="text-transparent bg-clip-text"
+                                            style={{
+                                                backgroundImage: accentGradient,
+                                                WebkitBackgroundClip: "text",
+                                                backgroundClip: "text",
+                                                color: 'transparent' // Fallback
+                                            }}
+                                        >
+                                            <svg width="0" height="0" className="absolute">
+                                                <linearGradient id={`pricingIconGradient-${index}`} x1="0%" y1="0%" x2="100%" y2="100%">
+                                                    <stop offset="0%" stopColor={currentGradientColors[0]} />
+                                                    <stop offset="100%" stopColor={currentGradientColors[1]} />
+                                                </linearGradient>
+                                            </svg>
+                                            {React.cloneElement(plan.icon as React.ReactElement<{ className?: string, stroke?: string }>, {
+                                                className: "w-6 h-6",
+                                                stroke: `url(#pricingIconGradient-${index})`
+                                            })}
+                                        </div>
+                                    </div>
+                                    <h4 className="text-lg font-medium text-white/80">{plan.subtitle}</h4>
+                                </div>
+                                <h3 className="text-4xl font-bold mb-2">{plan.name}</h3>
+                                <p className="text-white/50 text-sm leading-relaxed min-h-[40px]">
+                                    {plan.description}
+                                </p>
+                            </div>
+
+                            {/* Features List */}
+                            <ul className="relative z-10 space-y-4 mb-10 flex-grow">
+                                {plan.features.map((feature, i) => (
+                                    <li key={i} className="flex items-start gap-3 text-white/70 text-sm">
+                                        <Check className="w-5 h-5 text-white/40 shrink-0 mt-0.5" />
+                                        <span>{feature}</span>
+                                    </li>
+                                ))}
+                            </ul>
+
+                            {/* CTA Button */}
+                            <a
+                                href="#contact"
+                                className="relative z-10 w-full py-4 rounded-xl font-bold text-center transition-all duration-300 group-hover:scale-[1.02]"
+                                style={{
+                                    background: index === 1 ? accentGradient : 'rgba(255,255,255,0.1)',
+                                    color: 'white'
+                                }}
+                            >
+                                <span className="flex items-center justify-center gap-2">
+                                    Contact Us
+                                    <ArrowRight className="w-4 h-4" />
+                                </span>
+                            </a>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}

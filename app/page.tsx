@@ -4,6 +4,7 @@ import { useState } from "react";
 import ResponsiveHeroBanner from "@/components/ui/responsive-hero-banner";
 import ServicesSection from "@/components/ui/services-section";
 import { Testimonial } from "@/components/ui/design-testimonial";
+import PricingSection from "@/components/ui/pricing-section";
 
 export default function Home() {
     // Shared state to store current neon trail colors
@@ -22,6 +23,7 @@ export default function Home() {
             />
             <ServicesSection targetColors={neonTrailColors} />
             <Testimonial targetColors={neonTrailColors} />
+            <PricingSection targetColors={neonTrailColors} />
         </main>
     );
 }
