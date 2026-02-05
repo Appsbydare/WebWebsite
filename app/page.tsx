@@ -5,6 +5,9 @@ import ResponsiveHeroBanner from "@/components/ui/responsive-hero-banner";
 import ServicesSection from "@/components/ui/services-section";
 import { Testimonial } from "@/components/ui/design-testimonial";
 import PricingSection from "@/components/ui/pricing-section";
+import ColorHint from "@/components/ui/color-hint";
+import WorkSection from "@/components/ui/work-section";
+import Footer from "@/components/ui/footer";
 
 export default function Home() {
     // Shared state to store current neon trail colors
@@ -17,6 +20,7 @@ export default function Home() {
 
     return (
         <main className="min-h-screen bg-black">
+            <ColorHint colors={neonTrailColors} />
             <ResponsiveHeroBanner
                 onColorsChange={handleNeonTrailColorChange}
                 rawColors={neonTrailColors}
@@ -24,6 +28,8 @@ export default function Home() {
             <ServicesSection targetColors={neonTrailColors} />
             <Testimonial targetColors={neonTrailColors} />
             <PricingSection targetColors={neonTrailColors} />
+            <WorkSection targetColors={neonTrailColors} />
+            <Footer targetColors={neonTrailColors} />
         </main>
     );
 }
