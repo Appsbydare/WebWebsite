@@ -76,10 +76,10 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
     // Defaulting to DDF Branding
     backgroundImageUrl,
     navLinks = [
-        { label: "Work", href: "#work" },
         { label: "Services", href: "#services" },
+        { label: "Work", href: "#work" },
+        { label: "Pricing", href: "#pricing" },
         { label: "About", href: "#about" },
-        { label: "Process", href: "#process" }
     ],
     ctaButtonText = "Contact Us",
     ctaButtonHref = "#contact",
@@ -209,19 +209,122 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
         animRef.current = requestAnimationFrame(animate);
     };
 
+    // Custom Smooth Scroll Handler
+    const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+        if (href.startsWith('#')) {
+            e.preventDefault();
+            const target = document.querySelector(href) as HTMLElement;
+            if (target) {
+                // Access the global Lenis instance
+                const lenis = (window as any).lenis;
+                if (lenis) {
+                    lenis.scrollTo(target, {
+                        duration: 2.5, // Super smooth, slower scroll
+                        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Same easing or custom
+                    });
+                } else {
+                    // Fallback
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        }
+    };
+
     const [scrolledPastHero, setScrolledPastHero] = useState(false);
     const [inTestimonialSection, setInTestimonialSection] = useState(false);
+    const [activeSection, setActiveSection] = useState<'hero' | 'services' | 'pricing' | 'other'>('hero');
+
+    // Section Colors
+    const SECTION_COLORS = {
+        hero: null, // Uses dynamic neon trail
+        services: ['#c084fc', '#db2777'], // Purple/Pink
+        pricing: ['#fbbf24', '#22d3ee'], // Gold/Cyan
+    };
+
+    // Scroll listener for adaptive nav
+    useEffect(() => {
+        const handleScroll = () => {
+            const threshold = window.innerHeight - 100;
+            const scrollY = window.scrollY;
+
+            // Elements
+            const testimonialSection = document.getElementById("testimonial-section");
+            const servicesSection = document.getElementById("services");
+            const pricingSection = document.getElementById("pricing");
+
+            // Check Testimonial (White Background Logic)
+            let isInTestimonial = false;
+            if (testimonialSection) {
+                const rect = testimonialSection.getBoundingClientRect();
+                isInTestimonial = rect.top < 100 && rect.bottom > 0;
+                setInTestimonialSection(isInTestimonial);
+            }
+
+            // Check Active Section for Color Theme
+            let currentActive = 'hero';
+            const navbarOffset = 100;
+
+            if (pricingSection) {
+                const rect = pricingSection.getBoundingClientRect();
+                if (rect.top < navbarOffset && rect.bottom > navbarOffset) {
+                    currentActive = 'pricing';
+                }
+            }
+
+            if (currentActive === 'hero' && servicesSection) { // Only check if not already found deeper (Pricing is usually lower)
+                // Note: Check overlap precedence. Pricing is below Services.
+                // Actually, simpler logic: Check all, last one wins? 
+                // Or simple check:
+                const rect = servicesSection.getBoundingClientRect();
+                if (rect.top < navbarOffset && rect.bottom > navbarOffset) {
+                    currentActive = 'services';
+                }
+            }
+
+            // Override active section if we are in Hero (top relative)
+            if (scrollY < threshold) {
+                currentActive = 'hero';
+            }
+
+            setActiveSection(currentActive as any);
+
+            // Only set scrolledPastHero if we're past hero AND not in testimonial section
+            if (window.scrollY > threshold && !isInTestimonial) {
+                setScrolledPastHero(true);
+            } else if (window.scrollY <= threshold || isInTestimonial) {
+                setScrolledPastHero(false);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        // Check on mount
+        handleScroll();
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     // Nav bar gradient: use inverted colors when in hero or testimonial section (both have white bg), raw colors when in dark section
     const navGradient = useMemo(() => {
+        // If specific section active, usage logic can vary, 
+        // But navGradient is primarily for the BACKGROUND of the button or special elements.
+
         if (inTestimonialSection) {
-            // Testimonial section also uses inverted colors (white background with mix-blend-difference)
             return accentGradient;
         }
         return scrolledPastHero
             ? `linear-gradient(135deg, ${rawGradientColors[0]} 0%, ${rawGradientColors[1]} 100%)`
             : accentGradient;
     }, [scrolledPastHero, inTestimonialSection, rawGradientColors, accentGradient]);
+
+    // Effective Accent Gradient for Shimmer
+    const effectiveAccentGradient = useMemo(() => {
+        if (activeSection === 'pricing') {
+            return `linear-gradient(135deg, ${SECTION_COLORS.pricing[0]} 0%, ${SECTION_COLORS.pricing[1]} 100%)`;
+        }
+        if (activeSection === 'services') {
+            return `linear-gradient(135deg, ${SECTION_COLORS.services[0]} 0%, ${SECTION_COLORS.services[1]} 100%)`;
+        }
+        return accentGradient; // Default dynamic trail
+    }, [activeSection, accentGradient]);
 
     const navAccentColor = useMemo(() => {
         if (inTestimonialSection) {
@@ -359,14 +462,36 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                                 <a
                                     key={index}
                                     href={link.href}
+                                    onClick={(e) => handleNavClick(e, link.href)}
                                     className={cn(
-                                        "px-3 py-2 text-sm font-medium rounded-full transition-all duration-300",
+                                        "group relative px-3 py-2 text-sm font-medium rounded-full transition-all duration-300",
                                         link.isActive
-                                            ? ((scrolledPastHero && !inTestimonialSection) ? "bg-white/10 text-white font-semibold" : "bg-black/5 text-black font-semibold")
-                                            : ((scrolledPastHero && !inTestimonialSection) ? "text-neutral-400 hover:text-white hover:bg-white/10" : "text-neutral-500 hover:text-black hover:bg-black/5")
+                                            ? ((scrolledPastHero && !inTestimonialSection) ? "bg-white/10" : "bg-black/5")
+                                            : ((scrolledPastHero && !inTestimonialSection) ? "hover:bg-white/10" : "hover:bg-black/5")
                                     )}
                                 >
-                                    {link.label}
+                                    {/* Base Text */}
+                                    <span className={cn(
+                                        "relative z-10 transition-opacity duration-300 group-hover:opacity-0",
+                                        link.isActive
+                                            ? ((scrolledPastHero && !inTestimonialSection) ? "text-white font-semibold" : "text-black font-semibold")
+                                            : ((scrolledPastHero && !inTestimonialSection) ? "text-neutral-400" : "text-neutral-500")
+                                    )}>
+                                        {link.label}
+                                    </span>
+
+                                    {/* Gradient Hover Text */}
+                                    <span
+                                        className="absolute inset-0 z-20 flex items-center justify-center font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                        style={{
+                                            backgroundImage: effectiveAccentGradient,
+                                            WebkitBackgroundClip: 'text',
+                                            WebkitTextFillColor: 'transparent',
+                                            backgroundClip: 'text',
+                                        }}
+                                    >
+                                        {link.label}
+                                    </span>
                                 </a>
                             ))}
                         </nav>
