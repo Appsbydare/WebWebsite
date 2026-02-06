@@ -8,6 +8,7 @@ import PricingSection from "@/components/ui/pricing-section";
 import ColorHint from "@/components/ui/color-hint";
 import WorkSection from "@/components/ui/work-section";
 import Footer from "@/components/ui/footer";
+import Preloader from "@/components/ui/preloader";
 
 export default function Home() {
     // Shared state to store current neon trail colors
@@ -20,6 +21,7 @@ export default function Home() {
 
     return (
         <main className="min-h-screen bg-black">
+            <Preloader />
             <ColorHint colors={neonTrailColors} />
             <ResponsiveHeroBanner
                 onColorsChange={handleNeonTrailColorChange}

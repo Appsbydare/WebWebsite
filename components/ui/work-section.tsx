@@ -136,6 +136,7 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
     // Magnetic Cursor State
     const containerRef = useRef<HTMLDivElement>(null);
     const [isHovered, setIsHovered] = useState(false);
+    const [cursorText, setCursorText] = useState("Next");
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
 
@@ -261,11 +262,14 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
                     transition={{ type: "spring", damping: 20, stiffness: 200 }}
                 >
                     <motion.span
+                        key={cursorText} // Add key to trigger re-animation on text change
                         className="text-black text-xs font-medium tracking-wider uppercase"
-                        animate={{ opacity: isHovered ? 1 : 0 }}
-                        transition={{ delay: 0.1 }}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: isHovered ? 1 : 0, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
                     >
-                        Next
+                        {cursorText}
                     </motion.span>
                 </motion.div>
             </motion.div>
@@ -437,7 +441,14 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
                                             <h4
                                                 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.1] mb-2 tracking-tight transition-all duration-300 hover:opacity-80 text-black"
                                             >
-                                                <a href={current.url} target="_blank" rel="noopener noreferrer" className="flex items-start gap-4 group">
+                                                <a
+                                                    href={current.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-start gap-4 group"
+                                                    onMouseEnter={() => setCursorText("Visit")}
+                                                    onMouseLeave={() => setCursorText("Next")}
+                                                >
                                                     {current.name}
                                                     <ExternalLink className="w-6 h-6 md:w-8 md:h-8 opacity-50 md:opacity-40 -translate-y-0 translate-x-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 text-black" />
                                                 </a>
@@ -471,13 +482,13 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
                             <AnimatePresence>
                                 <motion.div
                                     key={activeIndex}
-                                    initial={{ opacity: 0, scale: isLargeScreen ? 1.5 : 1.05, x: isLargeScreen ? 100 : 30, y: -70 }}
-                                    animate={{ opacity: 1, scale: isLargeScreen ? 1.5 : 1.05, x: isLargeScreen ? 100 : 30, y: -70 }}
-                                    exit={{ opacity: 0, scale: isLargeScreen ? 1.5 : 1.05, x: isLargeScreen ? 100 : 30, y: -70 }}
+                                    initial={{ opacity: 0, scale: isLargeScreen ? 1.3 : 1.05, x: isLargeScreen ? 100 : 30, y: -70 }}
+                                    animate={{ opacity: 1, scale: isLargeScreen ? 1.3 : 1.05, x: isLargeScreen ? 100 : 30, y: -70 }}
+                                    exit={{ opacity: 0, scale: isLargeScreen ? 1.3 : 1.05, x: isLargeScreen ? 100 : 30, y: -70 }}
                                     transition={{ duration: 0.5, ease: "easeInOut" }}
                                     className="absolute inset-0 w-full h-full"
                                 >
-                                    <a href={current.url} target="_blank" rel="noopener noreferrer" className="block w-full h-full cursor-none md:cursor-pointer">
+                                    <div className="block w-full h-full pointer-events-none">
                                         <NextImage
                                             src={current.image}
                                             alt={current.name}
@@ -487,7 +498,7 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
                                             priority
                                             quality={95}
                                         />
-                                    </a>
+                                    </div>
                                 </motion.div>
                             </AnimatePresence>
                         </div>
@@ -495,7 +506,7 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
                     </div>
 
                     {/* Bottom ticker - displaying project names */}
-                    <div className="absolute -bottom-5 left-0 right-0 overflow-hidden opacity-[0.08] pointer-events-none text-black">
+                    <div className="absolute -bottom-1 left-0 right-0 overflow-hidden opacity-[0.08] pointer-events-none text-black">
                         <motion.div
                             className="flex whitespace-nowrap text-6xl font-bold tracking-tight"
                             animate={{ x: [0, -1000] }}
