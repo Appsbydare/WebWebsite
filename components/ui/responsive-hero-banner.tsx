@@ -232,6 +232,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
 
     const [scrolledPastHero, setScrolledPastHero] = useState(false);
     const [inTestimonialSection, setInTestimonialSection] = useState(false);
+    const [inWorkSection, setInWorkSection] = useState(false);
     const [activeSection, setActiveSection] = useState<'hero' | 'services' | 'pricing' | 'other'>('hero');
 
     // Section Colors
@@ -249,6 +250,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
 
             // Elements
             const testimonialSection = document.getElementById("testimonial-section");
+            const workSection = document.getElementById("work");
             const servicesSection = document.getElementById("services");
             const pricingSection = document.getElementById("pricing");
 
@@ -258,6 +260,14 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                 const rect = testimonialSection.getBoundingClientRect();
                 isInTestimonial = rect.top < 100 && rect.bottom > 0;
                 setInTestimonialSection(isInTestimonial);
+            }
+
+            // Check Work Section (White Background Logic)
+            let isInWork = false;
+            if (workSection) {
+                const rect = workSection.getBoundingClientRect();
+                isInWork = rect.top < 100 && rect.bottom > 0;
+                setInWorkSection(isInWork);
             }
 
             // Check Active Section for Color Theme
@@ -288,10 +298,10 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
 
             setActiveSection(currentActive as any);
 
-            // Only set scrolledPastHero if we're past hero AND not in testimonial section
-            if (window.scrollY > threshold && !isInTestimonial) {
+            // Only set scrolledPastHero if we're past hero AND not in testimonial or work section
+            if (window.scrollY > threshold && !isInTestimonial && !isInWork) {
                 setScrolledPastHero(true);
-            } else if (window.scrollY <= threshold || isInTestimonial) {
+            } else if (window.scrollY <= threshold || isInTestimonial || isInWork) {
                 setScrolledPastHero(false);
             }
         };
@@ -302,18 +312,18 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // Nav bar gradient: use inverted colors when in hero or testimonial section (both have white bg), raw colors when in dark section
+    // Nav bar gradient: use inverted colors when in hero, testimonial, or work section (all have white bg), raw colors when in dark section
     const navGradient = useMemo(() => {
         // If specific section active, usage logic can vary, 
         // But navGradient is primarily for the BACKGROUND of the button or special elements.
 
-        if (inTestimonialSection) {
+        if (inTestimonialSection || inWorkSection) {
             return accentGradient;
         }
         return scrolledPastHero
             ? `linear-gradient(135deg, ${rawGradientColors[0]} 0%, ${rawGradientColors[1]} 100%)`
             : accentGradient;
-    }, [scrolledPastHero, inTestimonialSection, rawGradientColors, accentGradient]);
+    }, [scrolledPastHero, inTestimonialSection, inWorkSection, rawGradientColors, accentGradient]);
 
     // Effective Accent Gradient for Shimmer
     const effectiveAccentGradient = useMemo(() => {
@@ -327,41 +337,11 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
     }, [activeSection, accentGradient]);
 
     const navAccentColor = useMemo(() => {
-        if (inTestimonialSection) {
+        if (inTestimonialSection || inWorkSection) {
             return accentColor;
         }
         return scrolledPastHero ? rawGradientColors[0] : accentColor;
-    }, [scrolledPastHero, inTestimonialSection, rawGradientColors, accentColor]);
-
-    // Scroll listener for adaptive nav
-    useEffect(() => {
-        const handleScroll = () => {
-            const threshold = window.innerHeight - 100;
-            const testimonialSection = document.getElementById("testimonial-section");
-
-            let isInTestimonial = false;
-            if (testimonialSection) {
-                const rect = testimonialSection.getBoundingClientRect();
-                // Check if we've scrolled into the testimonial section
-                // The section is considered "active" when its top reaches the navbar area (approx 100px from top)
-                // This ensures the navbar adapts only when it physically overlaps the white testimonial section
-                isInTestimonial = rect.top < 100 && rect.bottom > 0;
-                setInTestimonialSection(isInTestimonial);
-            }
-
-            // Only set scrolledPastHero if we're past hero AND not in testimonial section
-            if (window.scrollY > threshold && !isInTestimonial) {
-                setScrolledPastHero(true);
-            } else if (window.scrollY <= threshold || isInTestimonial) {
-                setScrolledPastHero(false);
-            }
-        };
-
-        window.addEventListener("scroll", handleScroll);
-        // Check on mount
-        handleScroll();
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+    }, [scrolledPastHero, inTestimonialSection, inWorkSection, rawGradientColors, accentColor]);
 
     // ... (keep handleColorChange logic here or just reference it if outside scope)
 
@@ -393,7 +373,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                 <div className="max-w-5xl mx-auto px-6 mt-4">
                     <div className={cn(
                         "relative flex items-center justify-between py-3 px-4 rounded-full border backdrop-blur-xl shadow-sm hover:shadow-md transition-all duration-500",
-                        (scrolledPastHero && !inTestimonialSection)
+                        (scrolledPastHero && !inTestimonialSection && !inWorkSection)
                             ? "bg-black/50 border-white/10 shadow-[0_0_20px_rgba(255,255,255,0.05)]"
                             : "bg-white/50 border-black/5"
                     )}>
@@ -422,9 +402,9 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                                     >
                                         <defs>
                                             <linearGradient id={`splashGradientNav-${navAccentColor}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                                                <stop offset="0%" stopColor={inTestimonialSection ? currentGradientColors[0] : (scrolledPastHero ? rawGradientColors[0] : currentGradientColors[0])} stopOpacity="0.9" />
-                                                <stop offset="50%" stopColor={inTestimonialSection ? currentGradientColors[1] : (scrolledPastHero ? rawGradientColors[1] : currentGradientColors[1])} stopOpacity="0.85" />
-                                                <stop offset="100%" stopColor={inTestimonialSection ? currentGradientColors[0] : (scrolledPastHero ? rawGradientColors[0] : currentGradientColors[0])} stopOpacity="0.7" />
+                                                <stop offset="0%" stopColor={(inTestimonialSection || inWorkSection) ? currentGradientColors[0] : (scrolledPastHero ? rawGradientColors[0] : currentGradientColors[0])} stopOpacity="0.9" />
+                                                <stop offset="50%" stopColor={(inTestimonialSection || inWorkSection) ? currentGradientColors[1] : (scrolledPastHero ? rawGradientColors[1] : currentGradientColors[1])} stopOpacity="0.85" />
+                                                <stop offset="100%" stopColor={(inTestimonialSection || inWorkSection) ? currentGradientColors[0] : (scrolledPastHero ? rawGradientColors[0] : currentGradientColors[0])} stopOpacity="0.7" />
                                             </linearGradient>
                                         </defs>
                                         <g clipPath="url(#4292a66c9a)">
@@ -466,16 +446,16 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                                     className={cn(
                                         "group relative px-3 py-2 text-sm font-medium rounded-full transition-all duration-300",
                                         link.isActive
-                                            ? ((scrolledPastHero && !inTestimonialSection) ? "bg-white/10" : "bg-black/5")
-                                            : ((scrolledPastHero && !inTestimonialSection) ? "hover:bg-white/10" : "hover:bg-black/5")
+                                            ? ((scrolledPastHero && !inTestimonialSection && !inWorkSection) ? "bg-white/10" : "bg-black/5")
+                                            : ((scrolledPastHero && !inTestimonialSection && !inWorkSection) ? "hover:bg-white/10" : "hover:bg-black/5")
                                     )}
                                 >
                                     {/* Base Text */}
                                     <span className={cn(
                                         "relative z-10 transition-opacity duration-300 group-hover:opacity-0",
                                         link.isActive
-                                            ? ((scrolledPastHero && !inTestimonialSection) ? "text-white font-semibold" : "text-black font-semibold")
-                                            : ((scrolledPastHero && !inTestimonialSection) ? "text-neutral-400" : "text-neutral-500")
+                                            ? ((scrolledPastHero && !inTestimonialSection && !inWorkSection) ? "text-white font-semibold" : "text-black font-semibold")
+                                            : ((scrolledPastHero && !inTestimonialSection && !inWorkSection) ? "text-neutral-400" : "text-neutral-500")
                                     )}>
                                         {link.label}
                                     </span>
@@ -511,7 +491,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                                 className={cn(
                                     "md:hidden p-2 rounded-full transition-colors",
-                                    (scrolledPastHero && !inTestimonialSection) ? "bg-white/10 text-white hover:bg-white/20" : "bg-black/5 text-black hover:bg-black/10"
+                                    (scrolledPastHero && !inTestimonialSection && !inWorkSection) ? "bg-white/10 text-white hover:bg-white/20" : "bg-black/5 text-black hover:bg-black/10"
                                 )}
                             >
                                 {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -525,7 +505,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                     <div className="absolute top-full left-0 right-0 p-6 md:hidden animate-in slide-in-from-top-4 fade-in duration-200">
                         <div className={cn(
                             "backdrop-blur-xl border rounded-3xl p-4 flex flex-col gap-2 shadow-xl transition-all duration-500",
-                            (scrolledPastHero && !inTestimonialSection)
+                            (scrolledPastHero && !inTestimonialSection && !inWorkSection)
                                 ? "bg-black/90 border-white/10"
                                 : "bg-white/90 border-black/5"
                         )}>
@@ -535,7 +515,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                                     href={link.href}
                                     className={cn(
                                         "px-4 py-3 text-lg font-medium rounded-xl transition-colors",
-                                        (scrolledPastHero && !inTestimonialSection)
+                                        (scrolledPastHero && !inTestimonialSection && !inWorkSection)
                                             ? "text-white/90 hover:bg-white/10"
                                             : "text-black/90 hover:bg-black/5"
                                     )}
