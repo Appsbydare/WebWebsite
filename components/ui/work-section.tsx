@@ -75,6 +75,14 @@ interface WorkSectionProps {
 
 export default function WorkSection({ targetColors }: WorkSectionProps) {
     const [activeIndex, setActiveIndex] = useState(0);
+    const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+    useEffect(() => {
+        const checkScreen = () => setIsLargeScreen(window.innerWidth >= 1500);
+        checkScreen();
+        window.addEventListener("resize", checkScreen);
+        return () => window.removeEventListener("resize", checkScreen);
+    }, []);
 
     // Gradient State - inverted colors for white background
     const [currentGradientColors, setCurrentGradientColors] = useState<[string, string]>(["#000000", "#000000"]);
@@ -189,7 +197,7 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
                 {/* Main Split Layout - with vertical label + progress line (01/02/03 style like testimonials) */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center -mt-2">
                     {/* Left Column: vertical label + gradient line (01/02/03 style), then text & info */}
-                    <div className="lg:col-span-5 order-2 lg:order-1 flex flex-row gap-0 justify-center pointer-events-auto">
+                    <div className="lg:col-span-5 xl:col-span-4 order-2 lg:order-1 flex flex-row gap-0 justify-center pointer-events-auto">
                         {/* Vertical "Our Work" + gradient progress line (like testimonials) */}
                         <div className="hidden lg:flex flex-col items-center justify-center pr-6 border-r border-black/10 self-stretch">
                             <motion.span
@@ -214,9 +222,9 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
                         </div>
                         <div className="flex-1 min-w-0 relative">
                             {/* Background Number - positioned behind text */}
-                            <div className="absolute -left-12 -bottom-10 w-full h-full pointer-events-none select-none z-0 overflow-visible">
+                            <div className="absolute left-0 -bottom-10 w-full h-full pointer-events-none select-none z-0 overflow-visible">
                                 <motion.div
-                                    className="text-[15rem] md:text-[20rem] font-bold leading-none tracking-tighter"
+                                    className="text-[15rem] md:text-[20rem] xl:text-[16rem] font-bold leading-none tracking-tighter"
                                 >
                                     <AnimatePresence mode="wait">
                                         <motion.span
@@ -298,14 +306,14 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
                     </div>
 
                     {/* Right Column: Image */}
-                    <div className="lg:col-span-7 order-1 lg:order-2 pointer-events-auto flex items-stretch">
+                    <div className="lg:col-span-7 xl:col-span-8 order-1 lg:order-2 pointer-events-auto flex items-stretch">
                         <div className="relative w-full h-[65vh] min-h-[450px] sm:h-[70vh] md:h-[80vh] max-h-[1000px] overflow-hidden rounded-3xl">
                             <AnimatePresence>
                                 <motion.div
                                     key={activeIndex}
-                                    initial={{ opacity: 0, scale: 1.25 }}
-                                    animate={{ opacity: 1, scale: 1.25 }}
-                                    exit={{ opacity: 0, scale: 1.25 }}
+                                    initial={{ opacity: 0, scale: isLargeScreen ? 1.5 : 1.05, x: isLargeScreen ? 100 : 30, y: -70 }}
+                                    animate={{ opacity: 1, scale: isLargeScreen ? 1.5 : 1.05, x: isLargeScreen ? 100 : 30, y: -70 }}
+                                    exit={{ opacity: 0, scale: isLargeScreen ? 1.5 : 1.05, x: isLargeScreen ? 100 : 30, y: -70 }}
                                     transition={{ duration: 0.5, ease: "easeInOut" }}
                                     className="absolute inset-0 w-full h-full"
                                 >
@@ -314,7 +322,7 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
                                             src={current.image}
                                             alt={current.name}
                                             fill
-                                            className="object-contain" // object-contain ensures the aspect ratio of the PNG (with transparent padding if any) is preserved perfectly
+                                            className="object-contain" // Changed to object-contain to show full mockup without cropping
                                             sizes="(max-width: 768px) 100vw, 60vw"
                                             priority
                                             quality={95}

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight, Linkedin, Twitter, Github, Instagram } from 'lucide-react';
 
 // Helper used for color interpolation
 const lerpColor = (start: string, end: string, t: number) => {
@@ -74,7 +74,7 @@ export default function Footer({ targetColors }: FooterProps) {
     const accentGradient = `linear-gradient(135deg, ${currentGradientColors[0]} 0%, ${currentGradientColors[1]} 100%)`;
 
     return (
-        <footer className="relative w-full py-24 px-6 border-t border-white/10 bg-transparent text-white overflow-hidden">
+        <footer className="relative w-full py-16 px-6 border-t border-white/10 bg-transparent text-white overflow-hidden">
             {/* Glassmorphism Background */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80 backdrop-blur-xl"></div>
 
@@ -114,7 +114,7 @@ export default function Footer({ targetColors }: FooterProps) {
                             rel="noopener noreferrer"
                             className="text-white/60 hover:text-white transition-colors duration-300 font-medium"
                         >
-                            TheDBot
+                            theDBot LLC
                         </a>
                     </div>
                     <div className="mt-4">
@@ -126,6 +126,49 @@ export default function Footer({ targetColors }: FooterProps) {
                             darshana@thedbot.com
                             <ArrowUpRight className="w-3 h-3 opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300" />
                         </a>
+                    </div>
+
+                    {/* Social Media Icons */}
+                    <div className="mt-4">
+                        <p className="text-white/30 text-xs uppercase tracking-wider mb-3">Follow Us</p>
+                        <div className="flex gap-4">
+                            <a
+                                href="https://linkedin.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-white/40 hover:text-white transition-colors duration-300"
+                                aria-label="LinkedIn"
+                            >
+                                <Linkedin className="w-5 h-5" />
+                            </a>
+                            <a
+                                href="https://twitter.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-white/40 hover:text-white transition-colors duration-300"
+                                aria-label="Twitter"
+                            >
+                                <Twitter className="w-5 h-5" />
+                            </a>
+                            <a
+                                href="https://github.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-white/40 hover:text-white transition-colors duration-300"
+                                aria-label="GitHub"
+                            >
+                                <Github className="w-5 h-5" />
+                            </a>
+                            <a
+                                href="https://instagram.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-white/40 hover:text-white transition-colors duration-300"
+                                aria-label="Instagram"
+                            >
+                                <Instagram className="w-5 h-5" />
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -157,64 +200,15 @@ export default function Footer({ targetColors }: FooterProps) {
                             ))}
                         </ul>
                     </div>
-
-                    <div>
-                        <h4
-                            className="text-sm font-bold tracking-widest uppercase mb-8 transition-colors duration-1000"
-                            style={{
-                                backgroundImage: accentGradient,
-                                WebkitBackgroundClip: "text",
-                                backgroundClip: "text",
-                                WebkitTextFillColor: "transparent"
-                            }}
-                        >
-                            Projects
-                        </h4>
-                        <ul className="space-y-4">
-                            <li>
-                                <a
-                                    href="https://thedbot.com/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-white/60 hover:text-white transition-all duration-300 flex items-center gap-2 group text-base"
-                                >
-                                    TheDBot
-                                    <ArrowUpRight className="w-4 h-4 opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300" />
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="https://jofurniture.vercel.app/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-white/60 hover:text-white transition-all duration-300 flex items-center gap-2 group text-base"
-                                >
-                                    J & O Furniture
-                                    <ArrowUpRight className="w-4 h-4 opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300" />
-                                </a>
-                            </li>
-                            <li>
-                                <a
-                                    href="https://www.signaltradingbots.com/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-white/60 hover:text-white transition-all duration-300 flex items-center gap-2 group text-base"
-                                >
-                                    SignalTradingBots
-                                    <ArrowUpRight className="w-4 h-4 opacity-0 -translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300" />
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </div>
 
             {/* Bottom Bar */}
-            <div className="max-w-7xl mx-auto mt-24 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-white/30 text-sm">
+            <div className="relative z-10 max-w-7xl mx-auto mt-16 pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-white/30 text-sm">
                 <p>&copy; {new Date().getFullYear()} Dynamic Design Factory. All rights reserved.</p>
                 <div className="flex gap-8">
                     <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-                    <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+                    <a href="#" className="hover:text-white transition-colors">Terms and Conditions</a>
                 </div>
             </div>
         </footer>
