@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import NextImage from 'next/image';
 import TextBlockAnimation from './text-block-animation';
-import { ArrowRight, ArrowLeft, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
 // Helper used for color interpolation
 const lerpColor = (start: string, end: string, t: number) => {
@@ -50,24 +50,80 @@ const projects = [
         stack: "React, Vite",
         url: "https://jofurniture.vercel.app/",
         image: "/images/projects/project1.png",
-        description: "A modern furniture e-commerce platform offering a seamless shopping experience with real-time inventory and 3D product previews."
+        description: "A modern furniture e-commerce platform offering a seamless shopping experience with real-time inventory and 3D product previews.",
+        testimonial: {
+            quote: "The attention to detail is unmatched. Every interaction feels intentional.",
+            author: "Sarah Chen",
+            role: "Design Director",
+            company: "Linear",
+            avatar: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/professional-woman-minimal-portrait-JIXD2g3xUKSkFHnS0FEQZV7XFVRh96.png",
+        }
     },
     {
         name: "SignalTradingBots",
         stack: "Next.js, GSAP, Framer Motion, Tailwind",
         url: "https://www.signaltradingbots.com/",
         image: "/images/projects/project2.png",
-        description: "High-performance trading automation interface featuring real-time data visualization and complex algorithmic controls."
+        description: "High-performance trading automation interface featuring real-time data visualization and complex algorithmic controls.",
+        testimonial: {
+            quote: "Finally, someone who understands that simplicity is the ultimate sophistication.",
+            author: "Marcus Webb",
+            role: "Creative Lead",
+            company: "Vercel",
+            avatar: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/professional-woman-asian-portrait-minimal-3JNilSFq6Lws8Gujkq8ZsV4v5owg2j.jpg",
+        }
     },
     {
         name: "TheDBot",
         stack: "Next.js, Tailwind",
         url: "https://thedbot.com/",
         image: "/images/projects/project3.png",
-
-        description: "Advanced automation software linking APIs, webhooks, and workflows to streamline business operations."
+        description: "Advanced automation software linking APIs, webhooks, and workflows to streamline business operations.",
+        testimonial: {
+            quote: "This work redefined our entire approach to digital experiences.",
+            author: "Elena Frost",
+            role: "Head of Product",
+            company: "Stripe",
+            avatar: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/professional-man-minimal-portrait-iJTSwKlJgwle9ZhX3NdX2gDFF6hamm.png",
+        }
     }
 ];
+
+const avatarImages = projects.map((p) => p.testimonial.avatar);
+
+function usePreloadImages(images: string[]) {
+    useEffect(() => {
+        images.forEach((src) => {
+            const img = new Image()
+            img.src = src
+        })
+    }, [images])
+}
+
+function SplitText({ text }: { text: string }) {
+    const words = text.split(" ")
+
+    return (
+        <span className="inline">
+            {words.map((word, i) => (
+                <motion.span
+                    key={i}
+                    initial={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, y: 20, filter: "blur(8px)" }}
+                    transition={{
+                        duration: 0.4,
+                        delay: i * 0.03,
+                        ease: [0.22, 1, 0.36, 1],
+                    }}
+                    className="inline-block mr-[0.25em]"
+                >
+                    {word}
+                </motion.span>
+            ))}
+        </span>
+    )
+}
 
 interface WorkSectionProps {
     targetColors?: string[];
@@ -76,6 +132,26 @@ interface WorkSectionProps {
 export default function WorkSection({ targetColors }: WorkSectionProps) {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+    // Magnetic Cursor State
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [isHovered, setIsHovered] = useState(false);
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+
+    const springConfig = { damping: 25, stiffness: 150 };
+    const cursorX = useSpring(mouseX, springConfig);
+    const cursorY = useSpring(mouseY, springConfig);
+
+    usePreloadImages(avatarImages);
+
+    const handleMouseMove = useCallback(
+        (e: React.MouseEvent) => {
+            mouseX.set(e.clientX);
+            mouseY.set(e.clientY);
+        },
+        [mouseX, mouseY],
+    );
 
     useEffect(() => {
         const checkScreen = () => setIsLargeScreen(window.innerWidth >= 1500);
@@ -148,29 +224,61 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
     const current = projects[activeIndex];
 
     const goNext = (e?: React.MouseEvent) => {
-        e?.stopPropagation();
+        // e?.stopPropagation(); // Allow bubbling to canvas if needed, but here we want to cycle
         setActiveIndex((prev) => (prev + 1) % projects.length);
-    };
-    const goPrev = (e?: React.MouseEvent) => {
-        e?.stopPropagation();
-        setActiveIndex((prev) => (prev - 1 + projects.length) % projects.length);
     };
 
     return (
         <section
             id="work"
-            className="relative w-full min-h-screen flex items-center overflow-hidden py-12 md:py-16"
-            onClick={() => window.dispatchEvent(new Event("neon-trail-click"))}
+            ref={containerRef}
+            className="relative w-full min-h-screen flex items-center overflow-hidden py-12 md:py-16 cursor-none" // Added cursor-none
+            onClick={(e) => {
+                goNext(e);
+                window.dispatchEvent(new Event("neon-trail-click"));
+            }}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
+            {/* Custom Magnetic Cursor */}
+            <motion.div
+                className="pointer-events-none fixed top-0 left-0 z-50 mix-blend-difference"
+                style={{
+                    x: cursorX,
+                    y: cursorY,
+                    translateX: "-50%",
+                    translateY: "-50%",
+                }}
+            >
+                <motion.div
+                    className="rounded-full bg-white flex items-center justify-center" // White cursor for mix-blend-difference on white background -> black logic
+                    animate={{
+                        width: isHovered ? 80 : 0,
+                        height: isHovered ? 80 : 0,
+                        opacity: isHovered ? 1 : 0,
+                    }}
+                    transition={{ type: "spring", damping: 20, stiffness: 200 }}
+                >
+                    <motion.span
+                        className="text-black text-xs font-medium tracking-wider uppercase"
+                        animate={{ opacity: isHovered ? 1 : 0 }}
+                        transition={{ delay: 0.1 }}
+                    >
+                        Next
+                    </motion.span>
+                </motion.div>
+            </motion.div>
+
             {/* Inversion Layer - Makes background white and inverts neon trail */}
             <div className="absolute inset-0 z-0 bg-white mix-blend-difference pointer-events-none"></div>
 
+            <div className="max-w-7xl mx-auto px-6 relative z-10 pointer-events-none h-full flex flex-col justify-center w-full">
 
-
-            <div className="max-w-7xl mx-auto px-6 relative z-10 pointer-events-none h-full flex flex-col justify-center">
-                {/* Header - now integrated into the layout flow better */}
-                <div className="mb-0 pointer-events-auto">
-                    <div className="max-w-7xl">
+                {/* Responsive Header: Flex Col on Mobile, Row on Desktop */}
+                <div className="mb-8 pointer-events-auto flex flex-col lg:flex-row justify-between items-start gap-12 lg:gap-8">
+                    {/* Left: Section Title */}
+                    <div className="max-w-2xl shrink-0">
                         <TextBlockAnimation blockColor="#000000" delay={0.2}>
                             <h2
                                 className="text-sm font-bold tracking-widest uppercase mb-2"
@@ -190,6 +298,73 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
                                     Built with Pride.
                                 </span>
                             </h3>
+                        </div>
+
+                        {/* Mobile Testimonial (Visible only on small screens < lg) - Optional or keep just one instance 
+                            For now, let's keep one instance and manage responsive layout via flex-col-reverse or similar if needed.
+                            User requested "in front of the heading where the red box is", implying right side on desktop.
+                        */}
+                    </div>
+
+                    {/* Right: Integrated Testimonial Component */}
+                    <div className="w-full max-w-xl">
+                        {/* Stacked Avatars */}
+                        <div className="flex -space-x-2 mb-6">
+                            {projects.map((p, i) => (
+                                <motion.div
+                                    key={i}
+                                    className={`w-8 h-8 rounded-full border-2 border-white overflow-hidden transition-all duration-300 ${i === activeIndex ? "ring-2 ring-offset-2 ring-black/20 scale-110 z-10" : "grayscale opacity-50"
+                                        }`}
+                                    style={{ borderColor: i === activeIndex ? currentGradientColors[0] : 'white' }}
+                                >
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img src={p.testimonial.avatar} alt={p.testimonial.author} className="w-full h-full object-cover" />
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        {/* Quote */}
+                        <div className="relative min-h-[80px] mb-6">
+                            <AnimatePresence mode="wait">
+                                <motion.blockquote
+                                    key={activeIndex}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0, transition: { duration: 0.2 } }}
+                                    className="text-xl md:text-2xl font-light leading-relaxed tracking-tight text-neutral-800"
+                                >
+                                    <SplitText text={current.testimonial.quote} />
+                                </motion.blockquote>
+                            </AnimatePresence>
+                        </div>
+
+                        {/* Author Info */}
+                        <div className="flex items-center gap-4">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={activeIndex}
+                                    className="relative pl-4"
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: 10 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <motion.div
+                                        className="absolute left-0 top-0 bottom-0 w-px"
+                                        style={{ background: accentGradient }}
+                                        initial={{ scaleY: 0 }}
+                                        animate={{ scaleY: 1 }}
+                                        transition={{ duration: 0.4, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+                                    // style={{ originY: 0 }}
+                                    />
+                                    <span className="block text-sm font-medium text-black tracking-wide">
+                                        {current.testimonial.author}
+                                    </span>
+                                    <span className="block text-xs text-neutral-500 mt-0.5 font-mono uppercase tracking-widest">
+                                        {current.testimonial.role} — {current.testimonial.company}
+                                    </span>
+                                </motion.div>
+                            </AnimatePresence>
                         </div>
                     </div>
                 </div>
@@ -287,21 +462,6 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
                                 </AnimatePresence>
                             </div>
 
-                            {/* Controls */}
-                            <div className="flex items-center gap-6 mt-12">
-                                <button
-                                    onClick={goPrev}
-                                    className="group relative w-14 h-14 rounded-full border border-black/10 flex items-center justify-center overflow-hidden hover:border-black/30 transition-colors bg-white/50 backdrop-blur-sm"
-                                >
-                                    <ArrowLeft className="relative z-10 w-5 h-5 text-black transition-colors" />
-                                </button>
-                                <button
-                                    onClick={goNext}
-                                    className="group relative w-14 h-14 rounded-full border border-black/10 flex items-center justify-center overflow-hidden hover:border-black/30 transition-colors bg-white/50 backdrop-blur-sm"
-                                >
-                                    <ArrowRight className="relative z-10 w-5 h-5 text-black transition-colors" />
-                                </button>
-                            </div>
                         </div>
                     </div>
 
@@ -318,7 +478,7 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
                                     className="absolute inset-0 w-full h-full"
                                 >
                                     <a href={current.url} target="_blank" rel="noopener noreferrer" className="block w-full h-full cursor-none md:cursor-pointer">
-                                        <Image
+                                        <NextImage
                                             src={current.image}
                                             alt={current.name}
                                             fill
@@ -331,6 +491,22 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
                                 </motion.div>
                             </AnimatePresence>
                         </div>
+
+                    </div>
+
+                    {/* Bottom ticker - displaying project names */}
+                    <div className="absolute -bottom-5 left-0 right-0 overflow-hidden opacity-[0.08] pointer-events-none text-black">
+                        <motion.div
+                            className="flex whitespace-nowrap text-6xl font-bold tracking-tight"
+                            animate={{ x: [0, -1000] }}
+                            transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                        >
+                            {[...Array(10)].map((_, i) => (
+                                <span key={i} className="mx-8">
+                                    {projects.map((p) => p.name).join(" • ")} •
+                                </span>
+                            ))}
+                        </motion.div>
                     </div>
 
                 </div>
