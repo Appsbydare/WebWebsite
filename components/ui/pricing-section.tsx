@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Check, ArrowRight, Zap, Clock, MessageCircle } from 'lucide-react';
 import TextBlockAnimation from './text-block-animation';
-import { motion } from 'framer-motion';
+import ContactModal from './contact-modal';
 
 // Helper used for color interpolation
 const lerpColor = (start: string, end: string, t: number) => {
@@ -29,21 +29,21 @@ const lerpColor = (start: string, end: string, t: number) => {
 
 const plans = [
     {
-        name: "1 Day",
-        subtitle: "Fast Track",
-        description: "Perfect for rapid landing pages or specific feature implementation.",
+        name: "$110 USD",
+        subtitle: "1 Day Package",
+        description: "1 Day / 24 Hours. Perfect for rapid landing pages or specific feature implementation.",
         features: [
             "2 High-Quality Pages",
             "Responsive Design",
             "Speed Optimization",
-            "Basic SEO Setup"
+            "Smooth Animations"
         ],
         icon: <Zap className="w-6 h-6" />,
         color: "from-yellow-400 to-orange-500" // Gold/Orange
     },
     {
-        name: "3 Days",
-        subtitle: "Deep Dive",
+        name: "$240 USD",
+        subtitle: "3 Day Package",
         description: "Comprehensive solution for standard websites and lightweight apps.",
         features: [
             "5-7 Custom Pages",
@@ -76,8 +76,10 @@ interface PricingSectionProps {
 }
 
 export default function PricingSection({ targetColors }: PricingSectionProps) {
-    // State for gradient colors - default to a gold/cyan mix for this section
+    // State for gradient colors
+    // State for gradient colors
     const [currentGradientColors, setCurrentGradientColors] = useState<[string, string]>(["#fbbf24", "#22d3ee"]);
+    const [contactConfig, setContactConfig] = useState<{ isOpen: boolean; need?: string; package?: string }>({ isOpen: false });
 
     // Refs for animation
     const animRef = useRef<number | null>(null);
@@ -89,8 +91,18 @@ export default function PricingSection({ targetColors }: PricingSectionProps) {
     const handleColorChange = (colors: string[]) => {
         if (!colors || colors.length === 0) return;
 
-        const primary = colors[0];
-        const secondary = colors[1] || colors[0];
+        // Invert colors for white section (same as hero)
+        const invertColor = (hex: string) => {
+            const n = parseInt(hex.slice(1), 16);
+            const r = 255 - ((n >> 16) & 255);
+            const g = 255 - ((n >> 8) & 255);
+            const b = 255 - (n & 255);
+            return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        };
+
+        const invertedColors = colors.map(invertColor);
+        const primary = invertedColors[0];
+        const secondary = invertedColors[1] || invertedColors[0];
 
         startColorsRef.current = [...currentGradientColors];
         targetColorsRef.current = [primary, secondary];
@@ -118,6 +130,7 @@ export default function PricingSection({ targetColors }: PricingSectionProps) {
         animRef.current = requestAnimationFrame(animate);
     };
 
+    // React to prop changes
     useEffect(() => {
         if (targetColors && targetColors.length > 0) {
             handleColorChange(targetColors);
@@ -130,12 +143,27 @@ export default function PricingSection({ targetColors }: PricingSectionProps) {
         };
     }, []);
 
+    // Handle click to change colors
+    const handleSectionClick = (e: React.MouseEvent<HTMLElement>) => {
+        // Trigger the neon trail color change
+        if (typeof window !== 'undefined') {
+            window.dispatchEvent(new Event('neon-trail-click'));
+        }
+    };
+
     return (
-        <section id="pricing" className="relative w-full min-h-screen py-32 px-6 z-10 bg-transparent text-white mix-blend-normal pointer-events-none">
-            <div className="max-w-7xl mx-auto pointer-events-auto">
+        <section
+            id="pricing"
+            className="relative w-full min-h-screen py-32 px-6 text-black mix-blend-normal overflow-hidden cursor-pointer"
+            onClick={handleSectionClick}
+        >
+            {/* Inversion Layer - Creates the White/Ink look like hero section */}
+            <div className="absolute inset-0 bg-white mix-blend-difference pointer-events-none"></div>
+
+            <div className="max-w-7xl mx-auto relative z-10">
                 {/* Header */}
                 <div className="mb-24 flex flex-col items-center text-center">
-                    <TextBlockAnimation blockColor="#ffffff" delay={0.2}>
+                    <TextBlockAnimation blockColor="#000000" delay={0.2}>
                         <h2 className="text-sm font-bold tracking-widest uppercase mb-4" style={{ color: currentGradientColors[0], transition: 'color 1s' }}>
                             Flexible Pricing
                         </h2>
@@ -150,20 +178,20 @@ export default function PricingSection({ targetColors }: PricingSectionProps) {
                             Without the bloat.
                         </span>
                     </h3>
-                    <p className="text-xl text-white/60 max-w-2xl mt-4">
+                    <p className="text-xl text-black/60 max-w-2xl mt-4">
                         Choose the perfect timeline for your project. From rapid prototypes to full-scale enterprise solutions.
                     </p>
                 </div>
 
                 {/* Plans Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
                     {plans.map((plan, index) => (
                         <div
                             key={index}
-                            className="group relative p-8 rounded-[2.5rem] bg-white/5 border border-white/10 backdrop-blur-md overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:bg-white/10 hover:border-white/20 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] flex flex-col"
+                            className="group relative p-8 rounded-[2.5rem] bg-black/5 border border-black/10 backdrop-blur-md overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:bg-black/10 hover:border-black/20 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] flex flex-col"
                         >
                             {/* Gradient Glow Effect on Hover */}
-                            <div className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-700 pointer-events-none"
+                            <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-700 pointer-events-none"
                                 style={{
                                     background: `radial-gradient(circle at 50% 0%, ${currentGradientColors[0]}, transparent 70%)`
                                 }}
@@ -172,7 +200,7 @@ export default function PricingSection({ targetColors }: PricingSectionProps) {
                             {/* Plan Header */}
                             <div className="relative z-10 mb-8">
                                 <div className="flex items-center gap-3 mb-4">
-                                    <div className="p-3 rounded-2xl bg-white/5 border border-white/10">
+                                    <div className="p-3 rounded-2xl bg-black/5 border border-black/10">
                                         <div
                                             className="text-transparent bg-clip-text"
                                             style={{
@@ -194,10 +222,10 @@ export default function PricingSection({ targetColors }: PricingSectionProps) {
                                             })}
                                         </div>
                                     </div>
-                                    <h4 className="text-lg font-medium text-white/80">{plan.subtitle}</h4>
+                                    <h4 className="text-lg font-medium text-black/80">{plan.subtitle}</h4>
                                 </div>
                                 <h3 className="text-4xl font-bold mb-2">{plan.name}</h3>
-                                <p className="text-white/50 text-sm leading-relaxed min-h-[40px]">
+                                <p className="text-black/50 text-sm leading-relaxed min-h-[40px]">
                                     {plan.description}
                                 </p>
                             </div>
@@ -205,31 +233,41 @@ export default function PricingSection({ targetColors }: PricingSectionProps) {
                             {/* Features List */}
                             <ul className="relative z-10 space-y-4 mb-10 flex-grow">
                                 {plan.features.map((feature, i) => (
-                                    <li key={i} className="flex items-start gap-3 text-white/70 text-sm">
-                                        <Check className="w-5 h-5 text-white/40 shrink-0 mt-0.5" />
+                                    <li key={i} className="flex items-start gap-3 text-black/70 text-sm">
+                                        <Check className="w-5 h-5 text-black/40 shrink-0 mt-0.5" />
                                         <span>{feature}</span>
                                     </li>
                                 ))}
                             </ul>
 
                             {/* CTA Button */}
-                            <a
-                                href="#contact"
+                            <button
+                                onClick={() => setContactConfig({
+                                    isOpen: true,
+                                    need: "Information about a Package",
+                                    package: index === 2 ? "Custom / Enterprise" : `${plan.subtitle} (${plan.name})`
+                                })}
                                 className="relative z-10 w-full py-4 rounded-xl font-bold text-center transition-all duration-300 group-hover:scale-[1.02]"
                                 style={{
-                                    background: index === 1 ? accentGradient : 'rgba(255,255,255,0.1)',
-                                    color: 'white'
+                                    background: index === 1 ? accentGradient : 'rgba(0,0,0,0.05)',
+                                    color: index === 1 ? 'white' : 'black'
                                 }}
                             >
                                 <span className="flex items-center justify-center gap-2">
                                     Contact Us
                                     <ArrowRight className="w-4 h-4" />
                                 </span>
-                            </a>
+                            </button>
                         </div>
                     ))}
                 </div>
             </div>
-        </section>
+            <ContactModal
+                isOpen={contactConfig.isOpen}
+                onClose={() => setContactConfig({ ...contactConfig, isOpen: false })}
+                initialNeed={contactConfig.need}
+                initialPackage={contactConfig.package}
+            />
+        </section >
     );
 }

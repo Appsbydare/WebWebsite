@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Menu, X, ArrowRight, Play, Sparkles } from 'lucide-react';
 import { TubesBackground } from "./neon-flow";
 import TextBlockAnimation from "./text-block-animation";
+import ContactModal from "./contact-modal";
 
 // Helper used for color interpolation (same as in neon-flow)
 const lerpColor = (start: string, end: string, t: number) => {
@@ -100,6 +101,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
     rawColors = [] // Raw neon trail colors for nav bar when in dark section
 }) => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
     // State to hold the current visible colors for the gradient (inverted for hero section)
     const [currentGradientColors, setCurrentGradientColors] = useState<[string, string]>(["#3b82f6", "#8b5cf6"]);
@@ -233,6 +235,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
     const [scrolledPastHero, setScrolledPastHero] = useState(false);
     const [inTestimonialSection, setInTestimonialSection] = useState(false);
     const [inWorkSection, setInWorkSection] = useState(false);
+    const [inPricingSection, setInPricingSection] = useState(false);
     const [activeSection, setActiveSection] = useState<'hero' | 'services' | 'pricing' | 'other'>('hero');
 
     // Section Colors
@@ -270,6 +273,14 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                 setInWorkSection(isInWork);
             }
 
+            // Check Pricing Section (White Background Logic)
+            let isInPricing = false;
+            if (pricingSection) {
+                const rect = pricingSection.getBoundingClientRect();
+                isInPricing = rect.top < 100 && rect.bottom > 0;
+                setInPricingSection(isInPricing);
+            }
+
             // Check Active Section for Color Theme
             let currentActive = 'hero';
             const navbarOffset = 100;
@@ -298,10 +309,10 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
 
             setActiveSection(currentActive as any);
 
-            // Only set scrolledPastHero if we're past hero AND not in testimonial or work section
-            if (window.scrollY > threshold && !isInTestimonial && !isInWork) {
+            // Only set scrolledPastHero if we're past hero AND not in testimonial, work, or pricing section
+            if (window.scrollY > threshold && !isInTestimonial && !isInWork && !isInPricing) {
                 setScrolledPastHero(true);
-            } else if (window.scrollY <= threshold || isInTestimonial || isInWork) {
+            } else if (window.scrollY <= threshold || isInTestimonial || isInWork || isInPricing) {
                 setScrolledPastHero(false);
             }
         };
@@ -312,18 +323,18 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    // Nav bar gradient: use inverted colors when in hero, testimonial, or work section (all have white bg), raw colors when in dark section
+    // Nav bar gradient: use inverted colors when in hero, testimonial, work, or pricing section (all have white bg), raw colors when in dark section
     const navGradient = useMemo(() => {
         // If specific section active, usage logic can vary, 
         // But navGradient is primarily for the BACKGROUND of the button or special elements.
 
-        if (inTestimonialSection || inWorkSection) {
+        if (inTestimonialSection || inWorkSection || inPricingSection) {
             return accentGradient;
         }
         return scrolledPastHero
             ? `linear-gradient(135deg, ${rawGradientColors[0]} 0%, ${rawGradientColors[1]} 100%)`
             : accentGradient;
-    }, [scrolledPastHero, inTestimonialSection, inWorkSection, rawGradientColors, accentGradient]);
+    }, [scrolledPastHero, inTestimonialSection, inWorkSection, inPricingSection, rawGradientColors, accentGradient]);
 
     // Effective Accent Gradient for Shimmer
     const effectiveAccentGradient = useMemo(() => {
@@ -337,11 +348,11 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
     }, [activeSection, accentGradient]);
 
     const navAccentColor = useMemo(() => {
-        if (inTestimonialSection || inWorkSection) {
+        if (inTestimonialSection || inWorkSection || inPricingSection) {
             return accentColor;
         }
         return scrolledPastHero ? rawGradientColors[0] : accentColor;
-    }, [scrolledPastHero, inTestimonialSection, inWorkSection, rawGradientColors, accentColor]);
+    }, [scrolledPastHero, inTestimonialSection, inWorkSection, inPricingSection, rawGradientColors, accentColor]);
 
     // ... (keep handleColorChange logic here or just reference it if outside scope)
 
@@ -371,12 +382,19 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
             {/* Navigation Bar */}
             <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 animate-slide-down" style={{ animationDuration: '0.8s' }}>
                 <div className="max-w-5xl mx-auto px-6 mt-4">
-                    <div className={cn(
-                        "relative flex items-center justify-between py-3 px-4 rounded-full border backdrop-blur-xl shadow-sm hover:shadow-md transition-all duration-500",
-                        (scrolledPastHero && !inTestimonialSection && !inWorkSection)
-                            ? "bg-black/50 border-white/10 shadow-[0_0_20px_rgba(255,255,255,0.05)]"
-                            : "bg-white/50 border-black/5"
-                    )}>
+                    <div
+                        className={cn(
+                            "relative flex items-center justify-between py-3 px-4 rounded-full border shadow-lg hover:shadow-xl transition-all duration-500",
+                            (scrolledPastHero && !inTestimonialSection && !inWorkSection && !inPricingSection)
+                                ? "bg-black/10 border-white/20 shadow-[0_0_30px_rgba(255,255,255,0.1)]"
+                                : "bg-white/10 border-black/10"
+                        )}
+                        style={{
+                            backdropFilter: 'blur(40px) saturate(150%) brightness(1.1)',
+                            WebkitBackdropFilter: 'blur(40px) saturate(150%) brightness(1.1)',
+                            isolation: 'isolate'
+                        }}
+                    >
 
                         {/* Logo */}
                         <a href="/" className="flex items-center px-3 group relative">
@@ -402,9 +420,9 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                                     >
                                         <defs>
                                             <linearGradient id={`splashGradientNav-${navAccentColor}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                                                <stop offset="0%" stopColor={(inTestimonialSection || inWorkSection) ? currentGradientColors[0] : (scrolledPastHero ? rawGradientColors[0] : currentGradientColors[0])} stopOpacity="0.9" />
-                                                <stop offset="50%" stopColor={(inTestimonialSection || inWorkSection) ? currentGradientColors[1] : (scrolledPastHero ? rawGradientColors[1] : currentGradientColors[1])} stopOpacity="0.85" />
-                                                <stop offset="100%" stopColor={(inTestimonialSection || inWorkSection) ? currentGradientColors[0] : (scrolledPastHero ? rawGradientColors[0] : currentGradientColors[0])} stopOpacity="0.7" />
+                                                <stop offset="0%" stopColor={(inTestimonialSection || inWorkSection || inPricingSection) ? currentGradientColors[0] : (scrolledPastHero ? rawGradientColors[0] : currentGradientColors[0])} stopOpacity="0.9" />
+                                                <stop offset="50%" stopColor={(inTestimonialSection || inWorkSection || inPricingSection) ? currentGradientColors[1] : (scrolledPastHero ? rawGradientColors[1] : currentGradientColors[1])} stopOpacity="0.85" />
+                                                <stop offset="100%" stopColor={(inTestimonialSection || inWorkSection || inPricingSection) ? currentGradientColors[0] : (scrolledPastHero ? rawGradientColors[0] : currentGradientColors[0])} stopOpacity="0.7" />
                                             </linearGradient>
                                         </defs>
                                         <g clipPath="url(#4292a66c9a)">
@@ -446,16 +464,16 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                                     className={cn(
                                         "group relative px-3 py-2 text-sm font-medium rounded-full transition-all duration-300",
                                         link.isActive
-                                            ? ((scrolledPastHero && !inTestimonialSection && !inWorkSection) ? "bg-white/10" : "bg-black/5")
-                                            : ((scrolledPastHero && !inTestimonialSection && !inWorkSection) ? "hover:bg-white/10" : "hover:bg-black/5")
+                                            ? ((scrolledPastHero && !inTestimonialSection && !inWorkSection && !inPricingSection) ? "bg-white/10" : "bg-black/5")
+                                            : ((scrolledPastHero && !inTestimonialSection && !inWorkSection && !inPricingSection) ? "hover:bg-white/10" : "hover:bg-black/5")
                                     )}
                                 >
                                     {/* Base Text */}
                                     <span className={cn(
                                         "relative z-10 transition-opacity duration-300 group-hover:opacity-0",
                                         link.isActive
-                                            ? ((scrolledPastHero && !inTestimonialSection && !inWorkSection) ? "text-white font-semibold" : "text-black font-semibold")
-                                            : ((scrolledPastHero && !inTestimonialSection && !inWorkSection) ? "text-neutral-400" : "text-neutral-500")
+                                            ? ((scrolledPastHero && !inTestimonialSection && !inWorkSection && !inPricingSection) ? "text-white font-semibold" : "text-black font-semibold")
+                                            : ((scrolledPastHero && !inTestimonialSection && !inWorkSection && !inPricingSection) ? "text-neutral-400" : "text-neutral-500")
                                     )}>
                                         {link.label}
                                     </span>
@@ -478,20 +496,20 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
 
                         {/* CTA & Mobile Toggle */}
                         <div className="flex items-center gap-3 pr-2">
-                            <a
-                                href={ctaButtonHref}
+                            <button
+                                onClick={() => setIsContactModalOpen(true)}
                                 className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-all shadow-md hover:shadow-lg"
                                 style={{ background: navGradient }}
                             >
                                 {ctaButtonText}
                                 <ArrowRight className="w-4 h-4" />
-                            </a>
+                            </button>
 
                             <button
                                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                                 className={cn(
                                     "md:hidden p-2 rounded-full transition-colors",
-                                    (scrolledPastHero && !inTestimonialSection && !inWorkSection) ? "bg-white/10 text-white hover:bg-white/20" : "bg-black/5 text-black hover:bg-black/10"
+                                    (scrolledPastHero && !inTestimonialSection && !inWorkSection && !inPricingSection) ? "bg-white/10 text-white hover:bg-white/20" : "bg-black/5 text-black hover:bg-black/10"
                                 )}
                             >
                                 {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -505,7 +523,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                     <div className="absolute top-full left-0 right-0 p-6 md:hidden animate-in slide-in-from-top-4 fade-in duration-200">
                         <div className={cn(
                             "backdrop-blur-xl border rounded-3xl p-4 flex flex-col gap-2 shadow-xl transition-all duration-500",
-                            (scrolledPastHero && !inTestimonialSection && !inWorkSection)
+                            (scrolledPastHero && !inTestimonialSection && !inWorkSection && !inPricingSection)
                                 ? "bg-black/90 border-white/10"
                                 : "bg-white/90 border-black/5"
                         )}>
@@ -515,7 +533,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                                     href={link.href}
                                     className={cn(
                                         "px-4 py-3 text-lg font-medium rounded-xl transition-colors",
-                                        (scrolledPastHero && !inTestimonialSection && !inWorkSection)
+                                        (scrolledPastHero && !inTestimonialSection && !inWorkSection && !inPricingSection)
                                             ? "text-white/90 hover:bg-white/10"
                                             : "text-black/90 hover:bg-black/5"
                                     )}
@@ -524,14 +542,16 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                                     {link.label}
                                 </a>
                             ))}
-                            <a
-                                href={ctaButtonHref}
-                                className="mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-white font-bold"
+                            <button
+                                onClick={() => {
+                                    setMobileMenuOpen(false);
+                                    setIsContactModalOpen(true);
+                                }}
+                                className="mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-white font-bold w-full"
                                 style={{ background: navGradient }}
-                                onClick={() => setMobileMenuOpen(false)}
                             >
                                 {ctaButtonText}
-                            </a>
+                            </button>
                         </div>
                     </div>
                 )}
@@ -600,8 +620,8 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                         <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                     </a>
 
-                    <a
-                        href={secondaryButtonHref}
+                    <button
+                        onClick={() => setIsContactModalOpen(true)}
                         className="group flex items-center gap-2 px-8 py-4 rounded-full border border-black/10 bg-black/5 backdrop-blur-md text-black font-medium hover:bg-black/10 transition-all"
                     >
                         <div className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -609,12 +629,18 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                             <Play className="w-4 h-4 fill-black" />
                         </div>
                         {secondaryButtonText}
-                    </a>
+                    </button>
                 </div>
 
                 {/* Partners Section REMOVED as requested */}
             </div>
-        </section>
+
+            <ContactModal
+                isOpen={isContactModalOpen}
+                onClose={() => setIsContactModalOpen(false)}
+                initialNeed="Custom Development"
+            />
+        </section >
     );
 };
 
