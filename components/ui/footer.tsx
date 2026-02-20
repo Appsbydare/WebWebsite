@@ -87,9 +87,9 @@ export default function Footer({ targetColors }: FooterProps) {
             {/* Subtle Grid Pattern */}
             <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none"></div>
 
-            <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-16 md:gap-8">
+            <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 items-start w-full">
                 {/* Branding & Description */}
-                <div className="flex flex-col gap-6 max-w-sm">
+                <div className="flex flex-col gap-6">
                     <a href="#" className="relative block transition-opacity hover:opacity-80">
                         <Image
                             src="/images/logo.png"
@@ -99,15 +99,11 @@ export default function Footer({ targetColors }: FooterProps) {
                             className="w-auto h-12 object-contain"
                         />
                     </a>
-                    <p className="text-white/50 text-lg leading-relaxed font-light">
+                    <p className="text-white/50 text-base leading-relaxed font-light mt-2">
                         Building digital experiences that matter. Turning complex challenges into elegant technological realities.
                     </p>
-                    <div className="flex flex-col gap-1 text-white/40 text-sm font-light mt-2">
-                        <p>1207 Delaware Ave #2685</p>
-                        <p>Wilmington, DE 19806</p>
-                    </div>
-                    <div className="mt-2">
-                        <p className="text-white/30 text-xs uppercase tracking-wider">Parent Company</p>
+                    <div className="mt-4">
+                        <p className="text-white/30 text-xs uppercase tracking-wider mb-1">Parent Company</p>
                         <a
                             href="https://thedbot.com/"
                             target="_blank"
@@ -117,8 +113,90 @@ export default function Footer({ targetColors }: FooterProps) {
                             theDBot LLC
                         </a>
                     </div>
-                    <div className="mt-4">
-                        <p className="text-white/30 text-xs uppercase tracking-wider mb-1">Contact</p>
+                </div>
+
+                {/* Navigation Links */}
+                <div>
+                    <h4
+                        className="text-sm font-bold tracking-widest uppercase mb-6 transition-colors duration-1000"
+                        style={{
+                            backgroundImage: accentGradient,
+                            WebkitBackgroundClip: "text",
+                            backgroundClip: "text",
+                            WebkitTextFillColor: "transparent"
+                        }}
+                    >
+                        Company
+                    </h4>
+                    <ul className="space-y-4">
+                        {['Services', 'Work', 'Pricing', 'About', 'Contact'].map((item) => (
+                            <li key={item}>
+                                <a
+                                    href={`#${item.toLowerCase()}`}
+                                    className="text-white/60 hover:text-white transition-all duration-300 flex items-center gap-2 group text-base"
+                                >
+                                    <span className="w-0 overflow-hidden group-hover:w-3 transition-all duration-300 h-[1px] bg-white"></span>
+                                    {item}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
+                {/* Support & Legal */}
+                <div>
+                    <h4
+                        className="text-sm font-bold tracking-widest uppercase mb-6 transition-colors duration-1000"
+                        style={{
+                            backgroundImage: accentGradient,
+                            WebkitBackgroundClip: "text",
+                            backgroundClip: "text",
+                            WebkitTextFillColor: "transparent"
+                        }}
+                    >
+                        Legal & Support
+                    </h4>
+                    <ul className="space-y-4">
+                        {[
+                            { name: 'Privacy Policy', link: '/privacy-policy' },
+                            { name: 'Terms and Conditions', link: '/terms' },
+                            { name: 'Return/Refund Policy', link: '/return-policy' },
+                            { name: 'Disclaimers', link: '/disclaimer' }
+                        ].map((item) => (
+                            <li key={item.name}>
+                                <a
+                                    href={item.link}
+                                    className="text-white/60 hover:text-white transition-all duration-300 flex items-center gap-2 group text-base"
+                                >
+                                    <span className="w-0 overflow-hidden group-hover:w-3 transition-all duration-300 h-[1px] bg-white"></span>
+                                    {item.name}
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
+                {/* Contact & Socials */}
+                <div className="flex flex-col gap-6">
+                    <div>
+                        <h4
+                            className="text-sm font-bold tracking-widest uppercase mb-6 transition-colors duration-1000"
+                            style={{
+                                backgroundImage: accentGradient,
+                                WebkitBackgroundClip: "text",
+                                backgroundClip: "text",
+                                WebkitTextFillColor: "transparent"
+                            }}
+                        >
+                            Get in Touch
+                        </h4>
+                        <div className="flex flex-col gap-1 text-white/50 text-sm font-light">
+                            <p>1207 Delaware Ave #2685</p>
+                            <p>Wilmington, DE 19806</p>
+                        </div>
+                    </div>
+
+                    <div>
                         <a
                             href="mailto:darshana@thedbot.com"
                             className="text-white/60 hover:text-white transition-colors duration-300 font-medium flex items-center gap-2 group"
@@ -129,7 +207,7 @@ export default function Footer({ targetColors }: FooterProps) {
                     </div>
 
                     {/* Social Media Icons */}
-                    <div className="mt-4">
+                    <div className="mt-2">
                         <p className="text-white/30 text-xs uppercase tracking-wider mb-3">Follow Us</p>
                         <div className="flex gap-4">
                             <a
@@ -171,45 +249,11 @@ export default function Footer({ targetColors }: FooterProps) {
                         </div>
                     </div>
                 </div>
-
-                {/* Navigation Links */}
-                <div className="flex flex-col sm:flex-row gap-16 md:gap-24">
-                    <div>
-                        <h4
-                            className="text-sm font-bold tracking-widest uppercase mb-8 transition-colors duration-1000"
-                            style={{
-                                backgroundImage: accentGradient,
-                                WebkitBackgroundClip: "text",
-                                backgroundClip: "text",
-                                WebkitTextFillColor: "transparent"
-                            }}
-                        >
-                            Company
-                        </h4>
-                        <ul className="space-y-4">
-                            {['Services', 'Work', 'Pricing', 'About', 'Contact'].map((item) => (
-                                <li key={item}>
-                                    <a
-                                        href={`#${item.toLowerCase()}`}
-                                        className="text-white/60 hover:text-white transition-all duration-300 flex items-center gap-2 group text-base"
-                                    >
-                                        <span className="w-0 overflow-hidden group-hover:w-3 transition-all duration-300 h-[1px] bg-white"></span>
-                                        {item}
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
             </div>
 
             {/* Bottom Bar */}
-            <div className="relative z-10 max-w-7xl mx-auto mt-16 pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-white/30 text-sm">
+            <div className="relative z-10 max-w-7xl mx-auto mt-20 pt-8 border-t border-white/5 flex justify-center items-center text-white/30 text-sm">
                 <p>&copy; {new Date().getFullYear()} Dynamic Design Factory. All rights reserved.</p>
-                <div className="flex gap-8">
-                    <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-                    <a href="#" className="hover:text-white transition-colors">Terms and Conditions</a>
-                </div>
             </div>
         </footer>
     );
