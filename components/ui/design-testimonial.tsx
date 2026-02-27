@@ -46,21 +46,18 @@ const hexToRgba = (hex: string, opacity: number) => {
 const testimonials = [
     {
         quote: "Transformed our entire creative process overnight.",
-        author: "Sarah Chen",
-        role: "Design Director",
-        company: "Linear",
+        author: "Michael Thompson",
+        project: "E-Commerce Site",
     },
     {
         quote: "The most elegant solution we've ever implemented.",
-        author: "Marcus Webb",
-        role: "Creative Lead",
-        company: "Vercel",
+        author: "Emily Rodriguez",
+        project: "Full Stack App",
     },
     {
         quote: "Pure craftsmanship in every single detail.",
-        author: "Elena Frost",
-        role: "Head of Product",
-        company: "Stripe",
+        author: "David Williams",
+        project: "Modern Landing Page",
     },
 ]
 
@@ -260,7 +257,7 @@ export function Testimonial({ targetColors }: TestimonialProps) {
                                 >
                                     <span className="inline-flex items-center gap-2 text-xs font-mono text-black/50 border border-black/10 rounded-full px-3 py-1">
                                         <span className="w-1.5 h-1.5 rounded-full" style={{ background: accentGradient }} />
-                                        {current.company}
+                                        {current.project}
                                     </span>
                                 </motion.div>
                             </AnimatePresence>
@@ -328,7 +325,6 @@ export function Testimonial({ targetColors }: TestimonialProps) {
                                         />
                                         <div>
                                             <p className="text-base font-medium text-black">{current.author}</p>
-                                            <p className="text-sm text-black/60">{current.role}</p>
                                         </div>
                                     </motion.div>
                                 </AnimatePresence>
@@ -345,7 +341,7 @@ export function Testimonial({ targetColors }: TestimonialProps) {
                         >
                             {[...Array(10)].map((_, i) => (
                                 <span key={i} className="mx-8">
-                                    {testimonials.map((t) => t.company).join(" • ")} •
+                                    {testimonials.map((t) => t.project).join(" • ")} •
                                 </span>
                             ))}
                         </motion.div>

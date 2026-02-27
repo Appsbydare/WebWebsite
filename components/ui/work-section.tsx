@@ -53,9 +53,8 @@ const projects = [
         description: "A modern furniture e-commerce platform offering a seamless shopping experience with real-time inventory and 3D product previews.",
         testimonial: {
             quote: "The attention to detail is unmatched. Every interaction feels intentional.",
-            author: "Sarah Chen",
-            role: "Design Director",
-            company: "Linear",
+            author: "Michael Thompson",
+            project: "E-Commerce Site",
             avatar: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/professional-woman-minimal-portrait-JIXD2g3xUKSkFHnS0FEQZV7XFVRh96.png",
         }
     },
@@ -67,9 +66,8 @@ const projects = [
         description: "High-performance trading automation interface featuring real-time data visualization and complex algorithmic controls.",
         testimonial: {
             quote: "Finally, someone who understands that simplicity is the ultimate sophistication.",
-            author: "Marcus Webb",
-            role: "Creative Lead",
-            company: "Vercel",
+            author: "Emily Rodriguez",
+            project: "Full Stack App",
             avatar: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/professional-woman-asian-portrait-minimal-3JNilSFq6Lws8Gujkq8ZsV4v5owg2j.jpg",
         }
     },
@@ -81,9 +79,8 @@ const projects = [
         description: "Advanced automation software linking APIs, webhooks, and workflows to streamline business operations.",
         testimonial: {
             quote: "This work redefined our entire approach to digital experiences.",
-            author: "Elena Frost",
-            role: "Head of Product",
-            company: "Stripe",
+            author: "David Williams",
+            project: "Modern Landing Page",
             avatar: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/professional-man-minimal-portrait-iJTSwKlJgwle9ZhX3NdX2gDFF6hamm.png",
         }
     }
@@ -365,7 +362,7 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
                                         {current.testimonial.author}
                                     </span>
                                     <span className="block text-xs text-neutral-500 mt-0.5 font-mono uppercase tracking-widest">
-                                        {current.testimonial.role} — {current.testimonial.company}
+                                        {current.testimonial.project}
                                     </span>
                                 </motion.div>
                             </AnimatePresence>
