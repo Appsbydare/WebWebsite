@@ -204,7 +204,7 @@ export default function AddonsSection({ targetColors }: AddonsSectionProps) {
                 </div>
 
                 {/* Add-ons & Feature Visualization */}
-                <div className="relative rounded-[3rem] bg-white/5 border border-white/10 p-12 overflow-hidden backdrop-blur-sm min-h-[600px] flex items-center">
+                <div className="relative rounded-[2rem] sm:rounded-[3rem] bg-white/5 border border-white/10 p-6 sm:p-12 overflow-hidden backdrop-blur-sm min-h-[600px] flex items-center">
                     {/* Background Text Visualization */}
                     <AnimatePresence>
                         {addons.map((addon) => (
@@ -270,7 +270,7 @@ export default function AddonsSection({ targetColors }: AddonsSectionProps) {
                         </defs>
                     </svg>
 
-                    <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-start w-full">
                         <div className="lg:col-span-4 space-y-12">
 
                             {/* Package Selection */}
@@ -313,13 +313,13 @@ export default function AddonsSection({ targetColors }: AddonsSectionProps) {
                                     {addons.map((addon) => (
                                         <label
                                             key={addon.id}
-                                            className={`relative flex items-center justify-between p-4 rounded-xl border cursor-pointer transition-all duration-300 group ${selectedAddons.has(addon.id)
+                                            className={`relative flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-xl border cursor-pointer transition-all duration-300 group gap-4 sm:gap-0 ${selectedAddons.has(addon.id)
                                                 ? 'bg-white/10 border-white/20 shadow-lg'
                                                 : 'bg-transparent border-white/5 hover:bg-white/5'
                                                 }`}
                                         >
                                             <div className="flex items-center gap-4">
-                                                <div className={`w-12 h-12 rounded-lg flex items-center justify-center transition-colors ${selectedAddons.has(addon.id)
+                                                <div className={`w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-lg flex items-center justify-center transition-colors ${selectedAddons.has(addon.id)
                                                     ? 'bg-white/20 text-white'
                                                     : 'bg-white/5 text-white/40'
                                                     }`}>
@@ -332,10 +332,10 @@ export default function AddonsSection({ targetColors }: AddonsSectionProps) {
                                                     )}
                                                 </div>
                                             </div>
-                                            <div className="flex flex-col items-end gap-1">
+                                            <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto gap-2 sm:gap-1 mt-2 sm:mt-0 pt-2 sm:pt-0 border-t border-white/5 sm:border-t-0">
                                                 <div className="flex items-center gap-3">
-                                                    <span className="font-mono text-lg opacity-80">+${addon.price}</span>
-                                                    <div className={`w-6 h-6 rounded-md border flex items-center justify-center transition-colors ${selectedAddons.has(addon.id)
+                                                    <span className="font-mono text-base sm:text-lg opacity-80">+${addon.price}</span>
+                                                    <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-md border flex items-center justify-center transition-colors ${selectedAddons.has(addon.id)
                                                         ? 'bg-white border-white'
                                                         : 'border-white/30'
                                                         }`}>
@@ -361,7 +361,7 @@ export default function AddonsSection({ targetColors }: AddonsSectionProps) {
                             </div>
                         </div>
 
-                        <div className="lg:col-span-8 p-10 rounded-3xl bg-black/40 border border-white/10 backdrop-blur-sm sticky top-24">
+                        <div className="lg:col-span-8 p-6 sm:p-10 rounded-2xl sm:rounded-3xl bg-black/40 border border-white/10 backdrop-blur-sm lg:sticky top-24">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 {/* Left Column: Price & Action */}
                                 <div className="flex flex-col h-full justify-between gap-8">
