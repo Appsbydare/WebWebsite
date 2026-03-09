@@ -578,7 +578,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                     {/* Line 1: Glass Effect Outline */}
                     <TextBlockAnimation blockColor="#000000" delay={0.1}>
                         <h1
-                            className="text-5xl sm:text-7xl md:text-8xl font-display font-black uppercase tracking-tighter leading-none text-black drop-shadow-sm"
+                            className="text-[12vw] leading-[0.9] sm:text-7xl md:text-8xl font-display font-black uppercase tracking-tighter sm:leading-none text-black drop-shadow-sm"
                         >
                             {title}
                         </h1>
@@ -588,7 +588,7 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                     <div className="mt-2 text-center">
                         <TextBlockAnimation blockColor="#363636ff" delay={0.3}>
                             <h1
-                                className="text-5xl sm:text-7xl md:text-8xl font-display font-black uppercase tracking-tighter leading-none text-transparent transition-all duration-1000"
+                                className="text-[12vw] leading-[0.9] sm:text-7xl md:text-8xl font-display font-black uppercase tracking-tighter sm:leading-none text-transparent transition-all duration-1000"
                                 style={{
                                     backgroundImage: accentGradient,
                                     WebkitBackgroundClip: "text",

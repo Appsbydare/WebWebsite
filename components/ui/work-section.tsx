@@ -129,6 +129,7 @@ interface WorkSectionProps {
 export default function WorkSection({ targetColors }: WorkSectionProps) {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isLargeScreen, setIsLargeScreen] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     // Magnetic Cursor State
     const containerRef = useRef<HTMLDivElement>(null);
@@ -152,7 +153,10 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
     );
 
     useEffect(() => {
-        const checkScreen = () => setIsLargeScreen(window.innerWidth >= 1500);
+        const checkScreen = () => {
+            setIsLargeScreen(window.innerWidth >= 1500);
+            setIsMobile(window.innerWidth < 1024);
+        };
         checkScreen();
         window.addEventListener("resize", checkScreen);
         return () => window.removeEventListener("resize", checkScreen);
@@ -475,15 +479,15 @@ export default function WorkSection({ targetColors }: WorkSectionProps) {
 
                     {/* Right Column: Image */}
                     <div className="lg:col-span-7 xl:col-span-8 order-1 lg:order-2 pointer-events-auto flex items-stretch">
-                        <div className="relative w-full h-[65vh] min-h-[450px] sm:h-[70vh] md:h-[80vh] max-h-[1000px] overflow-hidden rounded-3xl">
+                        <div className="relative w-full h-[35vh] min-h-[280px] sm:min-h-[450px] lg:h-[70vh] xl:h-[80vh] max-h-[1000px] overflow-hidden rounded-3xl">
                             <AnimatePresence>
                                 <motion.div
                                     key={activeIndex}
-                                    initial={{ opacity: 0, scale: isLargeScreen ? 1.3 : 1.05, x: isLargeScreen ? 100 : 30, y: -70 }}
-                                    animate={{ opacity: 1, scale: isLargeScreen ? 1.3 : 1.05, x: isLargeScreen ? 100 : 30, y: -70 }}
-                                    exit={{ opacity: 0, scale: isLargeScreen ? 1.3 : 1.05, x: isLargeScreen ? 100 : 30, y: -70 }}
+                                    initial={{ opacity: 0, scale: isLargeScreen ? 1.3 : (isMobile ? 1 : 1.05), x: isLargeScreen ? 100 : (isMobile ? 0 : 30), y: isMobile ? 0 : -70 }}
+                                    animate={{ opacity: 1, scale: isLargeScreen ? 1.3 : (isMobile ? 1 : 1.05), x: isLargeScreen ? 100 : (isMobile ? 0 : 30), y: isMobile ? 0 : -70 }}
+                                    exit={{ opacity: 0, scale: isLargeScreen ? 1.3 : (isMobile ? 1 : 1.05), x: isLargeScreen ? 100 : (isMobile ? 0 : 30), y: isMobile ? 0 : -70 }}
                                     transition={{ duration: 0.5, ease: "easeInOut" }}
-                                    className="absolute inset-0 w-full h-full"
+                                    className="absolute inset-0 w-full h-full flex items-center justify-center lg:block"
                                 >
                                     <div className="block w-full h-full pointer-events-none">
                                         <NextImage
