@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Check, ArrowRight, Zap, Clock, MessageCircle, Lock } from 'lucide-react';
+import { Check, ArrowRight, Zap, Clock, MessageCircle, Lock, ShoppingCart } from 'lucide-react';
 import TextBlockAnimation from './text-block-animation';
 import ContactModal from './contact-modal';
+import OrderModal, { type OrderPlan } from './order-modal';
 
 // Helper used for color interpolation
 const lerpColor = (start: string, end: string, t: number) => {
@@ -80,6 +81,7 @@ export default function PricingSection({ targetColors }: PricingSectionProps) {
     // State for gradient colors
     const [currentGradientColors, setCurrentGradientColors] = useState<[string, string]>(["#fbbf24", "#22d3ee"]);
     const [contactConfig, setContactConfig] = useState<{ isOpen: boolean; need?: string; package?: string }>({ isOpen: false });
+    const [orderPlan, setOrderPlan] = useState<OrderPlan | null>(null);
 
     // Refs for animation
     const animRef = useRef<number | null>(null);
@@ -240,24 +242,46 @@ export default function PricingSection({ targetColors }: PricingSectionProps) {
                                 ))}
                             </ul>
 
-                            {/* CTA Button */}
-                            <button
-                                onClick={() => setContactConfig({
-                                    isOpen: true,
-                                    need: "Information about a Package",
-                                    package: index === 2 ? "Custom / Enterprise" : `${plan.subtitle} (${plan.name})`
-                                })}
-                                className="relative z-10 w-full py-4 rounded-xl font-bold text-center transition-all duration-300 group-hover:scale-[1.02]"
-                                style={{
-                                    background: index === 1 ? accentGradient : 'rgba(0,0,0,0.05)',
-                                    color: index === 1 ? 'white' : 'black'
-                                }}
-                            >
-                                <span className="flex items-center justify-center gap-2">
-                                    Contact Us
-                                    <ArrowRight className="w-4 h-4" />
-                                </span>
-                            </button>
+                            {/* CTA Button(s) */}
+                            {index === 2 ? (
+                                // Custom/Enterprise — inquiry only
+                                <button
+                                    onClick={() => setContactConfig({
+                                        isOpen: true,
+                                        need: "Information about a Package",
+                                        package: "Custom / Enterprise"
+                                    })}
+                                    className="relative z-10 w-full py-4 rounded-xl font-bold text-center transition-all duration-300 group-hover:scale-[1.02]"
+                                    style={{ background: 'rgba(0,0,0,0.05)', color: 'black' }}
+                                >
+                                    <span className="flex items-center justify-center gap-2">
+                                        Contact Us
+                                        <ArrowRight className="w-4 h-4" />
+                                    </span>
+                                </button>
+                            ) : (
+                                // 1 Day / 3 Day — direct buy
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setOrderPlan({
+                                            name: plan.subtitle,
+                                            price: index === 0 ? 110 : 240,
+                                            features: plan.features,
+                                            duration: index === 0 ? "24 Hours" : "3 Days",
+                                            planId: index === 0 ? "1day" : "3day",
+                                            description: plan.description,
+                                        });
+                                    }}
+                                    className="relative z-10 w-full py-4 rounded-xl font-bold text-center transition-all duration-300 group-hover:scale-[1.02] text-white"
+                                    style={{ background: accentGradient }}
+                                >
+                                    <span className="flex items-center justify-center gap-2">
+                                        <ShoppingCart className="w-4 h-4" />
+                                        Book Now
+                                    </span>
+                                </button>
+                            )}
                         </div>
                     ))}
                 </div>
@@ -270,28 +294,33 @@ export default function PricingSection({ targetColors }: PricingSectionProps) {
                             Secure Payments
                         </div>
                         <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-8 grayscale">
-                            {/* Stripe */}
-                            <div className="flex items-center">
-                                <span className="text-3xl font-bold tracking-tighter normal-case">stripe</span>
+                            {/* Stripe official wordmark */}
+                            <div className="flex items-center h-10">
+                                <svg viewBox="0 0 60 25" xmlns="http://www.w3.org/2000/svg" className="h-7 w-auto" aria-label="Stripe">
+                                    <path d="M59.64 14.28h-8.06c.19 1.93 1.6 2.55 3.2 2.55 1.64 0 2.96-.37 4.05-.95v3.32a12.46 12.46 0 0 1-4.74.9c-4.01 0-6.83-2.5-6.83-7.48 0-4.19 2.39-7.52 6.3-7.52 3.92 0 5.96 3.28 5.96 7.5 0 .4-.04 1.28-.08 1.68zm-5.92-5.62c-1.03 0-2.17.73-2.17 2.58h4.25c0-1.85-1.07-2.58-2.08-2.58zM40.95 20.3c-1.44 0-2.32-.6-2.9-1.04l-.02 4.63-4.12.87V5.57h3.76l.08 1.02a4.7 4.7 0 0 1 3.23-1.29c2.9 0 5.62 2.6 5.62 7.4 0 5.23-2.7 7.6-5.65 7.6zM40 8.95c-.95 0-1.54.34-1.97.81l.02 6.12c.4.44.98.78 1.95.78 1.52 0 2.54-1.65 2.54-3.87 0-2.15-1.04-3.84-2.54-3.84zM28.24 5.57h4.13v14.44h-4.13V5.57zm0-4.7L32.37 0v3.36l-4.13.88V.88zm-4.32 9.35v9.79H19.8V5.57h3.7l.12 1.22c1-1.77 3.07-1.41 3.62-1.22v3.79c-.52-.17-2.29-.43-3.32.07zm-8.55 4.72c0 2.43 2.6 1.68 3.12 1.46v3.36c-.55.3-1.54.54-2.89.54a4.15 4.15 0 0 1-4.27-4.24l.01-13.17 4.02-.86v3.54h3.14V9.1h-3.13v5.85zm-4.91.7c0 2.97-2.31 4.66-5.73 4.66a11.2 11.2 0 0 1-4.46-.93v-3.93c1.38.75 3.1 1.31 4.46 1.31.92 0 1.53-.24 1.53-1C6.26 13.77 0 14.51 0 9.95 0 7.04 2.28 5.3 5.62 5.3c1.36 0 2.72.2 4.09.75v3.88a9.23 9.23 0 0 0-4.1-1.06c-.86 0-1.44.25-1.44.9 0 1.85 6.29.97 6.29 5.88z" fill="currentColor"/>
+                                </svg>
                             </div>
 
-                            {/* Mastercard */}
-                            <div className="flex items-center">
-                                <div className="flex">
-                                    <div className="w-6 h-6 rounded-full bg-black"></div>
-                                    <div className="w-6 h-6 rounded-full bg-black -ml-3 mix-blend-multiply opacity-80"></div>
-                                </div>
-                                <span className="ml-3 font-semibold tracking-tight text-xl lowercase">mastercard</span>
+                            {/* Visa official wordmark */}
+                            <div className="flex items-center h-10">
+                                <svg viewBox="0 0 750 471" xmlns="http://www.w3.org/2000/svg" className="h-7 w-auto" aria-label="Visa">
+                                    <path d="M278.198 334.228l33.36-195.766h53.358l-33.384 195.766h-53.334zm246.556-191.114c-10.57-3.966-27.136-8.222-47.822-8.222-52.725 0-89.865 26.55-90.18 64.603-.299 28.13 26.514 43.822 46.752 53.186 20.75 9.584 27.738 15.716 27.637 24.278-.133 13.117-16.586 19.116-31.924 19.116-21.355 0-32.701-2.967-50.225-10.273l-6.878-3.111-7.487 43.822c12.463 5.467 35.508 10.199 59.438 10.445 56.09 0 92.503-26.248 92.916-66.884.2-22.269-13.986-39.2-44.687-53.188-18.61-9.055-29.998-15.089-29.878-24.275 0-8.137 9.658-16.839 30.534-16.839 17.44-.269 30.07 3.534 39.9 7.5l4.782 2.254 7.24-42.418zm137.372-4.663h-41.24c-12.77 0-22.315 3.486-27.94 16.234l-79.245 179.404h56.031s9.16-24.123 11.233-29.418c6.125 0 60.555.084 68.336.084 1.596 6.853 6.49 29.334 6.49 29.334h49.5l-43.165-195.638zm-65.417 126.407c4.415-11.279 21.26-54.723 21.26-54.723-.314.521 4.381-11.334 7.074-18.684l3.606 16.878s10.217 46.728 12.353 56.529h-44.293zm-363.3-126.407l-52.238 133.44-5.574-27.129c-9.726-31.274-40.025-65.157-73.898-82.12l47.767 171.204 56.455-.063 84.024-195.332h-56.536z" fill="currentColor"/>
+                                    <path d="M146.92 138.462H61.731l-.682 4.073c66.249 16.015 110.104 54.692 128.348 101.19l-18.528-88.92c-3.2-12.29-12.498-15.95-23.949-16.343z" fill="currentColor"/>
+                                </svg>
                             </div>
 
-                            {/* Visa */}
-                            <div className="flex items-center">
-                                <span className="text-3xl font-extrabold tracking-widest italic uppercase">visa</span>
+                            {/* Mastercard overlapping circles */}
+                            <div className="flex items-center gap-2 h-10">
+                                <svg viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg" className="h-7 w-auto" aria-label="Mastercard">
+                                    <circle cx="15" cy="12" r="10" fill="currentColor" opacity="0.9"/>
+                                    <circle cx="23" cy="12" r="10" fill="currentColor" opacity="0.6"/>
+                                </svg>
+                                <span className="text-sm font-semibold tracking-tight">Mastercard</span>
                             </div>
 
                             {/* Apple Pay */}
-                            <div className="flex items-center gap-1.5 opacity-90">
-                                <svg className="w-6 h-6" viewBox="0 0 384 512" fill="currentColor">
+                            <div className="flex items-center gap-1.5 h-10">
+                                <svg className="w-6 h-6" viewBox="0 0 384 512" fill="currentColor" aria-label="Apple Pay">
                                     <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z" />
                                 </svg>
                                 <span className="text-2xl font-semibold tracking-tight">Pay</span>
@@ -308,6 +337,11 @@ export default function PricingSection({ targetColors }: PricingSectionProps) {
                 onClose={() => setContactConfig({ ...contactConfig, isOpen: false })}
                 initialNeed={contactConfig.need}
                 initialPackage={contactConfig.package}
+            />
+            <OrderModal
+                isOpen={orderPlan !== null}
+                onClose={() => setOrderPlan(null)}
+                plan={orderPlan}
             />
         </section >
     );

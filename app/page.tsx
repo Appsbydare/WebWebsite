@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import ResponsiveHeroBanner from "@/components/ui/responsive-hero-banner";
 import ServicesSection from "@/components/ui/services-section";
-
 import PricingSection from "@/components/ui/pricing-section";
 import AddonsSection from "@/components/ui/addons-section";
 import ColorHint from "@/components/ui/color-hint";
 import WorkSection from "@/components/ui/work-section";
 import Footer from "@/components/ui/footer";
 import Preloader from "@/components/ui/preloader";
+import PaymentSuccessModal from "@/components/ui/payment-success-modal";
 
 export default function Home() {
     // Shared state to store current neon trail colors
@@ -22,6 +22,9 @@ export default function Home() {
 
     return (
         <main className="min-h-screen bg-black">
+            <Suspense>
+                <PaymentSuccessModal />
+            </Suspense>
             <Preloader />
             <ColorHint colors={neonTrailColors} />
             <ResponsiveHeroBanner

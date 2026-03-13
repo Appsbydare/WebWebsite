@@ -7,6 +7,11 @@ import { Menu, X, ArrowRight, Play, Sparkles } from 'lucide-react';
 import { TubesBackground } from "./neon-flow";
 import TextBlockAnimation from "./text-block-animation";
 import ContactModal from "./contact-modal";
+import NavUserMenu from "./nav-user-menu";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 // Helper used for color interpolation (same as in neon-flow)
 const lerpColor = (start: string, end: string, t: number) => {
@@ -49,6 +54,58 @@ interface Partner {
     name: string;
     logo?: React.ReactNode;
     href: string;
+}
+
+/** Mobile-only auth button shown at the bottom of the mobile menu */
+function MobileAuthButton({ navGradient, onClose }: { navGradient: string; onClose: () => void }) {
+    const router = useRouter();
+    const [user, setUser] = React.useState<SupabaseUser | null>(null);
+
+    React.useEffect(() => {
+        const supabase = createClient();
+        supabase.auth.getUser().then(({ data: { user } }) => setUser(user));
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setUser(s?.user ?? null));
+        return () => subscription.unsubscribe();
+    }, []);
+
+    const handleSignOut = async () => {
+        const supabase = createClient();
+        await supabase.auth.signOut();
+        onClose();
+        router.push("/"); router.refresh();
+    };
+
+    if (!user) {
+        return (
+            <Link
+                href="/login"
+                onClick={onClose}
+                className="mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-white font-bold w-full"
+                style={{ background: navGradient }}
+            >
+                Login
+            </Link>
+        );
+    }
+
+    return (
+        <div className="mt-2 space-y-2">
+            <Link
+                href="/orders"
+                onClick={onClose}
+                className="flex items-center gap-2 px-4 py-3 rounded-xl font-bold w-full text-white"
+                style={{ background: navGradient }}
+            >
+                Customer Portal
+            </Link>
+            <button
+                onClick={handleSignOut}
+                className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium w-full text-white/70 hover:text-white bg-white/5 hover:bg-white/10 transition-all"
+            >
+                Sign Out
+            </button>
+        </div>
+    );
 }
 
 interface ResponsiveHeroBannerProps {
@@ -496,14 +553,10 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
 
                         {/* CTA & Mobile Toggle */}
                         <div className="flex items-center gap-3 pr-2">
-                            <button
-                                onClick={() => setIsContactModalOpen(true)}
-                                className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-all shadow-md hover:shadow-lg"
-                                style={{ background: navGradient }}
-                            >
-                                {ctaButtonText}
-                                <ArrowRight className="w-4 h-4" />
-                            </button>
+                            <NavUserMenu
+                                navGradient={navGradient}
+                                isDark={scrolledPastHero && !inTestimonialSection && !inWorkSection && !inPricingSection}
+                            />
 
                             <button
                                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -542,16 +595,10 @@ const ResponsiveHeroBanner: React.FC<ResponsiveHeroBannerProps> = ({
                                     {link.label}
                                 </a>
                             ))}
-                            <button
-                                onClick={() => {
-                                    setMobileMenuOpen(false);
-                                    setIsContactModalOpen(true);
-                                }}
-                                className="mt-2 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-white font-bold w-full"
-                                style={{ background: navGradient }}
-                            >
-                                {ctaButtonText}
-                            </button>
+                            <MobileAuthButton
+                                navGradient={navGradient}
+                                onClose={() => setMobileMenuOpen(false)}
+                            />
                         </div>
                     </div>
                 )}

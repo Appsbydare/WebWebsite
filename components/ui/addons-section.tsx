@@ -5,6 +5,7 @@ import { Check, ArrowRight, CreditCard, Bot, BarChart, Search, Zap, Clock } from
 import { motion, AnimatePresence } from 'framer-motion';
 import TextBlockAnimation from './text-block-animation';
 import ContactModal from './contact-modal';
+import OrderModal, { type OrderPlan } from './order-modal';
 
 // Helper used for color interpolation
 const lerpColor = (start: string, end: string, t: number) => {
@@ -103,6 +104,7 @@ export default function AddonsSection({ targetColors }: AddonsSectionProps) {
     const [selectedPackage, setSelectedPackage] = useState<string>('1day');
     const [selectedAddons, setSelectedAddons] = useState<Set<string>>(new Set());
     const [contactConfig, setContactConfig] = useState<ContactConfig>({ isOpen: false });
+    const [orderPlan, setOrderPlan] = useState<OrderPlan | null>(null);
 
     const animRef = useRef<number | null>(null);
     const startColorsRef = useRef<[string, string]>(["#fbbf24", "#22d3ee"]);
@@ -403,11 +405,19 @@ export default function AddonsSection({ targetColors }: AddonsSectionProps) {
                                     <button
                                         onClick={() => {
                                             const addonNames = Array.from(selectedAddons).map(id => addons.find(a => a.id === id)?.name).filter(Boolean) as string[];
-                                            setContactConfig({
-                                                isOpen: true,
-                                                need: "Information about a Package",
-                                                package: `${currentPackage.name} ($${currentPackage.price} USD)`,
-                                                addons: addonNames
+                                            const addonItems = Array.from(selectedAddons).map(id => addons.find(a => a.id === id)).filter(Boolean);
+                                            const addonTotal = addonItems.reduce((sum, a) => sum + (a?.price ?? 0), 0);
+                                            const totalPrice = currentPackage.price + addonTotal;
+                                            const totalDays = currentPackage.time + addonItems.reduce((sum, a) => sum + (a?.time ?? 0), 0);
+                                            const allFeatures = [...currentPackage.features, ...addonNames];
+                                            const nameParts = addonNames.length > 0
+                                                ? `${currentPackage.name} + ${addonNames.join(' + ')}`
+                                                : currentPackage.name;
+                                            setOrderPlan({
+                                                name: nameParts,
+                                                price: totalPrice,
+                                                features: allFeatures,
+                                                duration: `${totalDays} ${totalDays === 1 ? 'Day' : 'Days'}`,
                                             });
                                         }}
                                         className="w-full py-4 rounded-xl text-lg font-bold bg-white text-black hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
@@ -452,6 +462,11 @@ export default function AddonsSection({ targetColors }: AddonsSectionProps) {
                 initialNeed={contactConfig.need}
                 initialPackage={contactConfig.package}
                 initialAddons={contactConfig.addons}
+            />
+            <OrderModal
+                isOpen={orderPlan !== null}
+                onClose={() => setOrderPlan(null)}
+                plan={orderPlan}
             />
         </section>
     );
