@@ -3,10 +3,8 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import {
     ShoppingBag, ArrowRight, Clock, CheckCircle,
-    AlertCircle, Home, Package, DollarSign, Calendar,
-    ChevronRight, Sparkles,
+    AlertCircle, Package, ChevronRight, Sparkles,
 } from "lucide-react";
-import { SignOutButton } from "./sign-out-button";
 
 interface Order {
     id: string;
@@ -15,6 +13,7 @@ interface Order {
     status: "paid" | "refunded" | "disputed";
     created_at: string;
     stripe_session_id: string;
+    delivery_days: number | null;
 }
 
 const STATUS_CONFIG = {
@@ -61,7 +60,7 @@ export default async function OrdersPage() {
 
     const { data: orders, error } = await supabase
         .from("orders")
-        .select("id, plan_name, amount_usd, status, created_at, stripe_session_id")
+        .select("id, plan_name, amount_usd, status, created_at, stripe_session_id, delivery_days")
         .order("created_at", { ascending: false });
 
     const displayName = user.user_metadata?.full_name ?? user.email?.split("@")[0] ?? "there";
@@ -71,147 +70,78 @@ export default async function OrdersPage() {
     const latestOrder = orders?.[0] as Order | undefined;
 
     return (
-        <main className="min-h-screen bg-black px-4 py-10 sm:py-16 relative overflow-hidden">
-
-            {/* Dot grid */}
-            <div className="fixed inset-0 z-0 opacity-[0.15] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
-
-            {/* Neon ambient blobs */}
-            <div className="fixed inset-0 z-0 pointer-events-none">
-                <div className="absolute -top-32 left-1/3 w-[700px] h-[700px] rounded-full opacity-20 blur-[180px]"
-                    style={{ background: "radial-gradient(circle, #7c3aed, transparent 70%)" }} />
-                <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] rounded-full opacity-12 blur-[160px]"
-                    style={{ background: "radial-gradient(circle, #ec4899, transparent 70%)" }} />
-                <div className="absolute top-1/2 -left-32 w-[400px] h-[400px] rounded-full opacity-8 blur-[140px]"
-                    style={{ background: "radial-gradient(circle, #06b6d4, transparent 70%)" }} />
+        <div className="max-w-4xl mx-auto space-y-8">
+            {/* Page header */}
+            <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-white">My Orders</h1>
+                <p className="text-white/80 text-sm mt-1">Track your orders and project status</p>
             </div>
 
-            <div className="relative z-10 max-w-3xl mx-auto space-y-6">
-
-                {/* ── Top nav breadcrumb ── */}
-                <div className="flex items-center justify-between">
-                    <Link
-                        href="/"
-                        className="flex items-center gap-1.5 text-white/30 hover:text-white/70 text-xs font-medium transition-colors"
-                    >
-                        <Home className="w-3.5 h-3.5" />
-                        <span>Home</span>
-                        <ChevronRight className="w-3 h-3" />
-                        <span className="text-white/50">Portal</span>
-                    </Link>
-                    <SignOutButton />
-                </div>
-
-                {/* ── Profile / Hero card ── */}
-                <div
-                    className="relative rounded-3xl border border-white/10 p-6 sm:p-8 overflow-hidden backdrop-blur-2xl"
-                    style={{
-                        background: "linear-gradient(135deg, rgba(124,58,237,0.12) 0%, rgba(0,0,0,0.6) 60%, rgba(236,72,153,0.08) 100%)",
-                        boxShadow: "0 0 80px rgba(124,58,237,0.15), inset 0 1px 0 rgba(255,255,255,0.06)",
-                    }}
-                >
-                    {/* Gradient top bar */}
-                    <div className="absolute top-0 left-0 right-0 h-px"
-                        style={{ background: "linear-gradient(90deg, transparent, #7c3aed, #a855f7, #ec4899, transparent)" }} />
-
-                    <div className="flex items-center gap-5">
-                        {/* Avatar */}
+            {/* Stats grid – gradient adapts to card position */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {[
+                    { label: "ORDERS", value: orderCount.toString(), sub: "Total Orders", pos: 0 },
+                    { label: "SPENT", value: `$${totalSpent.toLocaleString("en-US", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`, sub: "USD", pos: 1 },
+                    { label: "LATEST", value: latestOrder ? formatDateShort(latestOrder.created_at) : "—", sub: "Last Order", pos: 2 },
+                ].map(({ label, value, sub, pos }) => {
+                    const gradients = [
+                        { bg: "linear-gradient(135deg, rgba(124,58,237,0.18) 0%, rgba(0,0,0,0.5) 50%, rgba(139,92,246,0.06) 100%)", bar: "linear-gradient(90deg, #7c3aed, #8b5cf6, transparent)", glow: "rgba(124,58,237,0.2)" },
+                        { bg: "linear-gradient(135deg, rgba(124,58,237,0.1) 0%, rgba(0,0,0,0.55) 50%, rgba(236,72,153,0.1) 100%)", bar: "linear-gradient(90deg, transparent, #7c3aed, #ec4899, transparent)", glow: "rgba(168,85,247,0.18)" },
+                        { bg: "linear-gradient(135deg, rgba(168,85,247,0.06) 0%, rgba(0,0,0,0.5) 50%, rgba(236,72,153,0.18) 100%)", bar: "linear-gradient(90deg, transparent, #a855f7, #ec4899)", glow: "rgba(236,72,153,0.2)" },
+                    ];
+                    const g = gradients[pos];
+                    return (
                         <div
-                            className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center flex-shrink-0 text-white font-black text-xl select-none"
+                            key={label}
+                            className="relative rounded-3xl border border-white/10 p-5 sm:p-6 overflow-hidden backdrop-blur-2xl transition-all hover:border-white/15"
                             style={{
-                                background: "linear-gradient(135deg, #7c3aed, #ec4899)",
-                                boxShadow: "0 0 24px rgba(124,58,237,0.5)",
+                                background: g.bg,
+                                boxShadow: `0 0 80px ${g.glow}, inset 0 1px 0 rgba(255,255,255,0.06)`,
                             }}
                         >
-                            {initials}
+                            <div className="absolute top-0 left-0 right-0 h-px" style={{ background: g.bar }} />
+                            <p className="text-xs font-bold tracking-widest uppercase text-purple-400 mb-1">{label}</p>
+                            <p className={`font-black text-white leading-none ${label === "LATEST" ? "text-2xl" : "text-3xl"}`}>{value}</p>
+                            <p className="text-white/70 text-sm mt-1">{sub}</p>
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold tracking-widest uppercase text-white/30 mb-0.5">Customer Portal</p>
-                            <h1 className="text-2xl sm:text-3xl font-black text-white truncate">
-                                Hey, {displayName} 👋
-                            </h1>
-                            <p className="text-white/40 text-sm mt-0.5 truncate">{user.email}</p>
-                        </div>
-                    </div>
+                    );
+                })}
+            </div>
 
-                    {/* Stats row */}
-                    <div className="mt-6 grid grid-cols-3 gap-3">
-                        {[
-                            {
-                                icon: Package,
-                                label: "Total Orders",
-                                value: orderCount.toString(),
-                            },
-                            {
-                                icon: DollarSign,
-                                label: "Total Spent",
-                                value: `$${totalSpent.toFixed(0)}`,
-                            },
-                            {
-                                icon: Calendar,
-                                label: "Last Order",
-                                value: latestOrder ? formatDateShort(latestOrder.created_at) : "—",
-                            },
-                        ].map(({ icon: Icon, label, value }) => (
-                            <div
-                                key={label}
-                                className="rounded-2xl border border-white/8 p-3 sm:p-4 backdrop-blur-sm"
-                                style={{ background: "rgba(255,255,255,0.03)" }}
-                            >
-                                <Icon className="w-4 h-4 text-white/30 mb-2" />
-                                <p className="text-lg sm:text-xl font-black text-white leading-none">{value}</p>
-                                <p className="text-white/30 text-xs mt-1">{label}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* ── Orders section header ── */}
-                <div className="flex items-center justify-between pt-2">
-                    <div>
-                        <h2 className="text-base font-bold text-white">Order History</h2>
-                        <p className="text-white/30 text-xs mt-0.5">
-                            {orderCount === 0 ? "No orders yet" : `${orderCount} order${orderCount > 1 ? "s" : ""}`}
-                        </p>
-                    </div>
+            {/* Orders section */}
+            <div>
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-base font-semibold text-white">Order History</h2>
                     <Link
-                        href="/#pricing"
-                        className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 text-white/50 hover:text-white hover:border-white/20 transition-all"
+                        href="/#addons"
+                        className="flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-xl border border-white/10 text-white/80 hover:text-white hover:border-white/20 hover:bg-white/5 transition-all"
                     >
-                        <Sparkles className="w-3 h-3" />
+                        <Sparkles className="w-3.5 h-3.5" />
                         New order
                     </Link>
                 </div>
 
-                {/* ── Error ── */}
                 {error && (
                     <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
                         Could not load orders. Please refresh.
                     </div>
                 )}
 
-                {/* ── Empty state ── */}
                 {!error && orderCount === 0 && (
                     <div
-                        className="rounded-3xl border border-white/10 backdrop-blur-2xl text-center py-16 px-8"
-                        style={{
-                            background: "rgba(0,0,0,0.5)",
-                            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
-                        }}
+                        className="rounded-2xl border border-white/10 p-12 text-center backdrop-blur-xl"
+                        style={{ background: "rgba(255,255,255,0.02)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)" }}
                     >
-                        <div
-                            className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center"
-                            style={{ background: "linear-gradient(135deg, rgba(124,58,237,0.2), rgba(236,72,153,0.2))", border: "1px solid rgba(255,255,255,0.08)" }}
-                        >
+                        <div className="w-14 h-14 rounded-2xl mx-auto mb-4 flex items-center justify-center bg-purple-500/15">
                             <ShoppingBag className="w-7 h-7 text-purple-400" />
                         </div>
-                        <h3 className="text-xl font-bold text-white mb-2">No orders yet</h3>
-                        <p className="text-white/40 text-sm mb-8 max-w-xs mx-auto leading-relaxed">
+                        <h3 className="text-lg font-semibold text-white mb-2">No orders yet</h3>
+                        <p className="text-white/70 text-sm mb-6 max-w-sm mx-auto">
                             Once you purchase a package, your orders will appear here.
                         </p>
                         <Link
-                            href="/#pricing"
-                            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-white transition-all hover:opacity-90 hover:scale-[1.02]"
+                            href="/#addons"
+                            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-white transition-all hover:opacity-90"
                             style={{
                                 background: "linear-gradient(135deg, #7c3aed, #ec4899)",
                                 boxShadow: "0 0 24px rgba(124,58,237,0.4)",
@@ -222,89 +152,73 @@ export default async function OrdersPage() {
                     </div>
                 )}
 
-                {/* ── Orders list ── */}
                 {orders && orderCount > 0 && (
                     <div className="space-y-3">
-                        {(orders as Order[]).map((order, i) => {
+                        {(orders as Order[]).map((order) => {
                             const statusCfg = STATUS_CONFIG[order.status] ?? STATUS_CONFIG.paid;
                             const StatusIcon = statusCfg.icon;
+                            const deliveryDays = order.delivery_days ?? 0;
                             return (
-                                <div
+                                <Link
                                     key={order.id}
-                                    className="group relative rounded-2xl border border-white/10 backdrop-blur-2xl overflow-hidden transition-all duration-300 hover:border-white/20"
-                                    style={{
-                                        background: "rgba(0,0,0,0.5)",
-                                        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)",
-                                        animationDelay: `${i * 60}ms`,
-                                    }}
+                                    href={`/orders/${order.id}`}
+                                    className="group block rounded-2xl border border-white/10 backdrop-blur-xl overflow-hidden transition-all duration-200 hover:border-white/20 hover:bg-white/[0.02]"
+                                    style={{ background: "rgba(255,255,255,0.02)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)" }}
                                 >
-                                    {/* Left accent bar */}
-                                    <div
-                                        className="absolute left-0 top-4 bottom-4 w-0.5 rounded-full opacity-60"
-                                        style={{ background: "linear-gradient(180deg, #7c3aed, #ec4899)" }}
-                                    />
-
-                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 pl-6">
-                                        {/* Left: icon + info */}
-                                        <div className="flex items-center gap-4">
-                                            <div
-                                                className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                                                style={{
-                                                    background: "linear-gradient(135deg, rgba(124,58,237,0.25), rgba(236,72,153,0.15))",
-                                                    border: "1px solid rgba(255,255,255,0.08)",
-                                                }}
-                                            >
-                                                <ShoppingBag className="w-5 h-5 text-purple-400" />
+                                    <div className="absolute left-0 top-4 bottom-4 w-0.5 rounded-full opacity-60"
+                                        style={{ background: "linear-gradient(180deg, #7c3aed, #ec4899)" }} />
+                                    <div className="p-5 pl-6 flex items-center justify-between gap-4">
+                                        <div className="flex items-center gap-4 min-w-0 flex-1">
+                                            <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-white/5 border border-white/5">
+                                                <Package className="w-5 h-5 text-purple-400" />
                                             </div>
-                                            <div>
-                                                <h3 className="font-bold text-white text-sm sm:text-base leading-tight">{order.plan_name}</h3>
-                                                <div className="flex items-center gap-2 mt-1">
-                                                    <Clock className="w-3 h-3 text-white/25" />
-                                                    <span className="text-white/35 text-xs">{formatDate(order.created_at)}</span>
-                                                    <span className="text-white/15 text-xs">·</span>
-                                                    <span className="text-white/20 text-xs font-mono">{order.stripe_session_id.slice(-8)}</span>
+                                            <div className="min-w-0">
+                                                <h3 className="font-semibold text-white text-sm sm:text-base group-hover:text-purple-300 transition-colors">
+                                                    {order.plan_name}
+                                                </h3>
+                                                <div className="flex items-center gap-2 mt-1 text-xs text-white/80">
+                                                    <Clock className="w-3 h-3" />
+                                                    <span>{formatDate(order.created_at)}</span>
+                                                    {deliveryDays > 0 && (
+                                                        <span>· {deliveryDays} day{deliveryDays !== 1 ? "s" : ""} delivery</span>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>
-
-                                        {/* Right: price + status */}
-                                        <div className="flex items-center gap-3 sm:flex-shrink-0 pl-[60px] sm:pl-0">
+                                        <div className="flex items-center gap-3 flex-shrink-0">
                                             <div className="text-right">
-                                                <p className="text-xl font-black text-white leading-none">
-                                                    ${order.amount_usd.toFixed(2)}
-                                                </p>
-                                                <p className="text-white/25 text-xs mt-0.5">USD</p>
+                                                <p className="text-lg font-bold text-white">${order.amount_usd.toFixed(2)}</p>
+                                                <p className="text-white/70 text-xs">USD</p>
                                             </div>
-                                            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold ${statusCfg.bg} ${statusCfg.color}`}>
+                                            <ChevronRight className="w-5 h-5 text-white/40 group-hover:text-white/80 transition-colors" />
+                                            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-semibold ${statusCfg.bg} ${statusCfg.color}`}>
                                                 <span className={`w-1.5 h-1.5 rounded-full ${statusCfg.dot}`} />
-                                                <StatusIcon className="w-3 h-3" />
                                                 {statusCfg.label}
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             );
                         })}
                     </div>
                 )}
-
-                {/* ── Footer ── */}
-                <div
-                    className="rounded-2xl border border-white/8 p-5 backdrop-blur-xl flex flex-col sm:flex-row items-center justify-between gap-3 mt-4"
-                    style={{ background: "rgba(255,255,255,0.02)" }}
-                >
-                    <p className="text-white/30 text-xs text-center sm:text-left">
-                        Need help with an order?
-                    </p>
-                    <a
-                        href="mailto:darshana@thedbot.com"
-                        className="text-xs font-bold px-4 py-2 rounded-xl border border-white/10 text-purple-400 hover:text-purple-300 hover:border-purple-400/30 transition-all"
-                    >
-                        Contact Support →
-                    </a>
-                </div>
-
             </div>
-        </main>
+
+            {/* Footer */}
+            <div
+                className="rounded-2xl border border-white/10 p-5 backdrop-blur-xl flex flex-col sm:flex-row items-center justify-between gap-3"
+                style={{ background: "rgba(255,255,255,0.02)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)" }}
+            >
+                <p className="text-white/70 text-sm text-center sm:text-left">
+                    Need help with an order?
+                </p>
+                <a
+                    href="mailto:darshana@thedbot.com"
+                    className="text-sm font-semibold px-4 py-2 rounded-xl border border-white/10 text-purple-400 hover:text-purple-300 hover:border-purple-400/30 transition-all"
+                >
+                    Contact Support →
+                </a>
+            </div>
+        </div>
     );
 }

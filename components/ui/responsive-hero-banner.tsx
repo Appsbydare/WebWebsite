@@ -60,6 +60,7 @@ interface Partner {
 function MobileAuthButton({ navGradient, onClose }: { navGradient: string; onClose: () => void }) {
     const router = useRouter();
     const [user, setUser] = React.useState<SupabaseUser | null>(null);
+    const [isAdmin, setIsAdmin] = React.useState(false);
 
     React.useEffect(() => {
         const supabase = createClient();
@@ -67,6 +68,11 @@ function MobileAuthButton({ navGradient, onClose }: { navGradient: string; onClo
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setUser(s?.user ?? null));
         return () => subscription.unsubscribe();
     }, []);
+
+    React.useEffect(() => {
+        if (!user) { setIsAdmin(false); return; }
+        fetch("/api/admin/check").then((r) => r.json()).then((d) => setIsAdmin(!!d?.isAdmin)).catch(() => setIsAdmin(false));
+    }, [user?.id]);
 
     const handleSignOut = async () => {
         const supabase = createClient();
@@ -90,6 +96,15 @@ function MobileAuthButton({ navGradient, onClose }: { navGradient: string; onClo
 
     return (
         <div className="mt-2 space-y-2">
+            {isAdmin && (
+                <Link
+                    href="/admin"
+                    onClick={onClose}
+                    className="flex items-center gap-2 px-4 py-3 rounded-xl font-bold w-full text-white bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/30 transition-all"
+                >
+                    Admin Portal
+                </Link>
+            )}
             <Link
                 href="/orders"
                 onClick={onClose}

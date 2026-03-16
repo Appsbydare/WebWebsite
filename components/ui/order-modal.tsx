@@ -79,9 +79,24 @@ export default function OrderModal({ isOpen, onClose, plan }: OrderModalProps) {
         setError(null);
 
         try {
+            const deliveryDays = parseInt(plan.duration, 10) || (plan.duration.toLowerCase().includes("day") ? 1 : 0);
             const body = plan.planId
-                ? { planId: plan.planId, customerName: name, customerEmail: email }
-                : { name: plan.name, amount: plan.price, description: plan.features.join(", "), customerName: name, customerEmail: email };
+                ? {
+                    planId: plan.planId,
+                    customerName: name,
+                    customerEmail: email,
+                    deliveryDays: plan.planId === "1day" ? 1 : 3,
+                    features: plan.features,
+                }
+                : {
+                    name: plan.name,
+                    amount: plan.price,
+                    description: plan.features.join(", "),
+                    customerName: name,
+                    customerEmail: email,
+                    deliveryDays,
+                    features: plan.features,
+                };
 
             const res = await fetch("/api/checkout", {
                 method: "POST",

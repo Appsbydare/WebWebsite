@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createServiceClient } from "@/lib/supabase/server";
+import { logger } from "@/lib/logger";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: "2026-02-25.clover",
@@ -58,6 +59,8 @@ export async function POST(req: NextRequest) {
         }
 
         const amountUsd = session.amount_total ? session.amount_total / 100 : 0;
+        const deliveryDays = session.metadata?.delivery_days ? parseInt(session.metadata.delivery_days, 10) : null;
+        const features = session.metadata?.features ?? null;
 
         const { error: insertError } = await supabase.from("orders").insert({
             user_id: user.id,
@@ -65,17 +68,19 @@ export async function POST(req: NextRequest) {
             plan_name: session.metadata?.plan_name ?? "Package",
             amount_usd: amountUsd,
             status: "paid",
+            delivery_days: Number.isNaN(deliveryDays) ? null : deliveryDays,
+            features,
         });
 
         if (insertError) {
             // Log server-side only — never expose DB errors to Stripe
-            console.error("[webhook] insert error:", insertError.message);
+            logger.error("[webhook] insert error:", insertError.message);
             return NextResponse.json({ error: "DB insert failed" }, { status: 500 });
         }
 
         return NextResponse.json({ received: true });
     } catch (err) {
-        console.error("[webhook] unexpected error:", err);
+        logger.error("[webhook] unexpected error:", err);
         return NextResponse.json({ error: "Internal error" }, { status: 500 });
     }
 }

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { User, LogOut, ShoppingBag, ChevronDown, LogIn } from "lucide-react";
+import { User, LogOut, ShoppingBag, ChevronDown, LogIn, Shield } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
@@ -16,11 +16,11 @@ interface NavUserMenuProps {
 export default function NavUserMenu({ navGradient, isDark }: NavUserMenuProps) {
     const router = useRouter();
     const [user, setUser] = useState<SupabaseUser | null>(null);
+    const [isAdmin, setIsAdmin] = useState(false);
     const [loading, setLoading] = useState(true);
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    // ── Fetch session on mount and subscribe to auth changes ─────────────────
     useEffect(() => {
         const supabase = createClient();
 
@@ -35,6 +35,17 @@ export default function NavUserMenu({ navGradient, isDark }: NavUserMenuProps) {
 
         return () => subscription.unsubscribe();
     }, []);
+
+    useEffect(() => {
+        if (!user) {
+            setIsAdmin(false);
+            return;
+        }
+        fetch("/api/admin/check")
+            .then((r) => r.json())
+            .then((data) => setIsAdmin(!!data?.isAdmin))
+            .catch(() => setIsAdmin(false));
+    }, [user?.id]);
 
     // ── Close dropdown when clicking outside ─────────────────────────────────
     useEffect(() => {
@@ -111,6 +122,16 @@ export default function NavUserMenu({ navGradient, isDark }: NavUserMenuProps) {
 
                     {/* Menu items */}
                     <div className="p-1.5 space-y-0.5">
+                        {isAdmin && (
+                            <Link
+                                href="/admin"
+                                onClick={() => setDropdownOpen(false)}
+                                className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm text-white/80 hover:text-white hover:bg-white/10 transition-all"
+                            >
+                                <Shield className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                                Admin Portal
+                            </Link>
+                        )}
                         <Link
                             href="/orders"
                             onClick={() => setDropdownOpen(false)}
